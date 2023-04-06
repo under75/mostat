@@ -30,7 +30,7 @@
 						<tr class="small" th:each="reportType, iStat : ${reportTypesPage.content}">
 							<td th:text="${reportType.id}" />
 							<td class="btn-link" style="cursor: pointer;"
-								th:text="${reportType.name}" onclick="" />
+								th:text="${reportType.name}" th:onclick="|location.href='@{/lpu/download}'+'/'+'${reportType.id}'|" />
 							<td><input type="file" th:name="'rep' + ${reportType.id}"
 								th:id="'rep' + ${reportType.id}" class="form-control form-control-sm"></td>
 						</tr>
