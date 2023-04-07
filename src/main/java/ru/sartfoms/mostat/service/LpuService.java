@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import ru.sartfoms.mostat.entity.Lpu;
 import ru.sartfoms.mostat.entity.ReportType;
+import ru.sartfoms.mostat.entity.User;
 import ru.sartfoms.mostat.repository.LpuRepository;
 import ru.sartfoms.mostat.repository.ReportTypeRepository;
 
@@ -24,9 +25,10 @@ public class LpuService {
 		return lpuRepository.getReferenceById(id);
 	}
 
-	public InputStream createExcel(Long id) throws IOException  {
+	public InputStream createExcel(Long id, User user) throws IOException  {
 		ReportType reportType = reportTypeRepository.getReferenceById(id);
+		Lpu lpu = getById(user.getLpuId());
 		
-		return new ExcelTemplateGenerator(reportType).toExcel();
+		return new ExcelTemplateGenerator(reportType, lpu).toExcel();
 	}
 }

@@ -14,37 +14,48 @@
 	<div class="container">
 		<div th:insert="menu :: navbar"></div>
 		<br />
-		<form th:method="POST" th:action="@{/lpu/upload}" id="repForm">
+		<form th:method="POST" enctype="multipart/form-data"
+			th:action="@{/lpu/upload}" id="repForm">
 			<input type="hidden" id="page" name="page" />
 			<h4 th:text="${lpu.name}"></h4>
 			<div th:if="${reportTypesPage.content.size} > 0">
-				<table class="table table-sm table-striped table-bordered">
+				<table class="table table-sm table-bordered">
 					<thead class="table-light">
 						<tr class="small">
 							<th>Код</th>
 							<th>Скачать шаблон отчета</th>
-							<th>Загрузить отчет</th>
+							<th class="d-flex justify-content-between">Загрузить отчет
+								<div th:if="${hasError != null}">
+									<span class="badge rounded-pill bg-danger" th:if="${hasError}">ошибка
+										загрузки</span><span class="badge rounded-pill bg-success"
+										th:if="${!hasError}">отчет загружен</span>
+								</div>
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr class="small" th:each="reportType, iStat : ${reportTypesPage.content}">
+						<tr class="small"
+							th:each="reportType, iStat : ${reportTypesPage.content}">
 							<td th:text="${reportType.id}" />
 							<td class="btn-link" style="cursor: pointer;"
-								th:text="${reportType.name}" th:onclick="|location.href='@{/lpu/download}'+'/'+'${reportType.id}'|" />
-							<td><input type="file" th:name="'rep' + ${reportType.id}"
-								th:id="'rep' + ${reportType.id}" class="form-control form-control-sm"></td>
+								th:text="${reportType.name}"
+								th:onclick="|location.href='@{/lpu/download}'+'/'+'${reportType.id}'|" />
+							<td><input type="file" name="report"
+								th:id="'rep' + ${reportType.id}"
+								class="form-control form-control-sm"
+								onchange="this.form.submit()"></td>
 						</tr>
 					</tbody>
 				</table>
 				<nav aria-label="Pagination"
-					th:if="${reportTypesPage.totalPages gt 0}">
+					th:if="${reportTypesPage.totalPages gt 1}">
 					<ul
 						class="pagination pagination-sm justify-content-center font-weight-medium">
 						<li class="page-item"
 							th:classappend="${reportTypesPage.number eq 0} ? 'disabled'">
 							<button type="button" class="btn btn-sm btn-link"
 								th:classappend="${reportTypesPage.number eq 0} ? 'disabled'"
-								th:onclick="|goToPage(${reportTypesPage.number lt 2 ? 1 : reportTypesPagee.number})|">
+								th:onclick="|goToPage(${reportTypesPage.number lt 2 ? 1 : reportTypesPage.number})|">
 								<p>&#60;&#60;
 								<p>
 							</button>

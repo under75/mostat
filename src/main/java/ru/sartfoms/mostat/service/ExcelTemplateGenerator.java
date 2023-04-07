@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import ru.sartfoms.mostat.entity.Lpu;
 import ru.sartfoms.mostat.entity.ReportType;
 
 public class ExcelTemplateGenerator {
@@ -28,15 +29,22 @@ public class ExcelTemplateGenerator {
 	protected XSSFSheet sheet;
 	public final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 	protected final static String HEADER_DELIMETER = "::";
-	XSSFRow row;
+	XSSFRow row0;
+	XSSFRow row1;
 	XSSFRow row2;
+	XSSFRow row5;
+	CellStyle titleStyle;
 	CellStyle headerStyle;
+	Lpu lpu;
 
-	public ExcelTemplateGenerator(ReportType reportType) {
+	public ExcelTemplateGenerator(ReportType reportType, Lpu lpu) {
+		this.lpu = lpu;
 		template = new XSSFWorkbook();
 		sheet = template.createSheet("Отчет №" + reportType.getId());
-		row = sheet.createRow(0);
-		row2 = sheet.createRow(3);
+		row0 = sheet.createRow(0);
+		row1 = sheet.createRow(1);
+		row2 = sheet.createRow(2);
+		row5 = sheet.createRow(5);
 		createStyle();
 		createHeader(reportType);
 	}
@@ -51,25 +59,29 @@ public class ExcelTemplateGenerator {
 	protected void createHeader(ReportType reportType) {
 		int cellNumber = 0;
 		int oldCellNumber;
+		setCellValue(createCellAndFormat(row0, cellNumber, titleStyle), lpu.getName());
+		setCellValue(createCellAndFormat(row1, cellNumber, titleStyle), "Отчет №" + reportType.getId() + " " + reportType.getName());
 		Map<String, Collection<String>> model = createModel(reportType);
 		for (Entry<String, Collection<String>> entry : model.entrySet()) {
 			if (entry.getValue() != null) {
-				setCellValue(createCellAndFormat(row, cellNumber, headerStyle), entry.getKey());
+				setCellValue(createCellAndFormat(row2, cellNumber, headerStyle), entry.getKey());
 				oldCellNumber = cellNumber;
 				for (Iterator<String> iterator = entry.getValue().iterator(); iterator.hasNext();) {
 					String bottom = (String) iterator.next();
-					setCellValue(createCellAndFormat(row2, cellNumber, headerStyle), bottom);
-					sheet.addMergedRegion(new CellRangeAddress(3, 5, cellNumber, cellNumber));
+					setCellValue(createCellAndFormat(row5, cellNumber, headerStyle), bottom);
+					sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum() + 2, cellNumber, cellNumber));
 					if (iterator.hasNext())
 						cellNumber++;
 				}
-				sheet.addMergedRegion(new CellRangeAddress(0, 2, oldCellNumber, cellNumber));
+				sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 2, oldCellNumber, cellNumber));
 			} else {
-				setCellValue(createCellAndFormat(row, cellNumber, headerStyle), entry.getKey());
-				sheet.addMergedRegion(new CellRangeAddress(0, 5, cellNumber, cellNumber));
+				setCellValue(createCellAndFormat(row2, cellNumber, headerStyle), entry.getKey());
+				sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 5, cellNumber, cellNumber));
 			}
 			cellNumber++;
 		}
+		sheet.addMergedRegion(new CellRangeAddress(row0.getRowNum(), row0.getRowNum(), row0.getFirstCellNum(), cellNumber - 1));
+		sheet.addMergedRegion(new CellRangeAddress(row1.getRowNum(), row1.getRowNum(), row1.getFirstCellNum(), cellNumber - 1));
 	}
 
 	private Map<String, Collection<String>> createModel(ReportType reportType) {
@@ -159,6 +171,13 @@ public class ExcelTemplateGenerator {
 	}
 
 	private void createStyle() {
+		titleStyle = template.createCellStyle();
+		Font titleFont = template.createFont();
+		titleFont.setFontName("Calibri");
+		titleFont.setItalic(true);
+		//titleFont.setFontHeightInPoints((short) 10);
+		titleStyle.setFont(titleFont);
+		
 		headerStyle = template.createCellStyle();
 		Font headerFont = template.createFont();
 		headerFont.setBold(false);
