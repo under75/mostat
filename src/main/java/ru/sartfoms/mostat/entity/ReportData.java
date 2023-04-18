@@ -5,25 +5,24 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "MO_REPORT_DATA", schema = "STATOWNER")
+@IdClass(ReportDataId.class)
 public class ReportData {
 	@Id
-	@Column(name = "ID")
-	private Long id;
-	
 	@Column(name = "REP_TYPE_ID")
 	private Long typeId;
-	
+	@Id
 	@Column(name = "LPU_ID")
 	private Integer lpuId;
-	
+	@Id
 	@Column(name = "DT")
 	private LocalDateTime dateTime;
-	
+	@Id
 	@Column(name = "REP_ROW_NUM")
 	private Integer rowNum;
 	
@@ -31,7 +30,7 @@ public class ReportData {
 	private String userName;
 	
 	@Lob
-	@Column(name = "FILE")
+	@Column(name = "FILE_")
 	private byte[] file;
 	
 	@Column(name = "COL_E")
@@ -183,14 +182,6 @@ public class ReportData {
 	
 	@Column(name = "COL_BB")
 	private String bb;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public Long getTypeId() {
 		return typeId;

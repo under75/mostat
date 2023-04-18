@@ -4,10 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -28,7 +26,6 @@ public class ExcelTemplateGenerator {
 	protected XSSFWorkbook template;
 	protected XSSFSheet sheet;
 	public final static SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
-	protected final static String HEADER_DELIMETER = "::";
 	XSSFRow row0;
 	XSSFRow row1;
 	XSSFRow row2;
@@ -60,8 +57,9 @@ public class ExcelTemplateGenerator {
 		int cellNumber = 0;
 		int oldCellNumber;
 		setCellValue(createCellAndFormat(row0, cellNumber, titleStyle), lpu.getName());
-		setCellValue(createCellAndFormat(row1, cellNumber, titleStyle), "Отчет №" + reportType.getId() + " " + reportType.getName());
-		Map<String, Collection<String>> model = createModel(reportType);
+		setCellValue(createCellAndFormat(row1, cellNumber, titleStyle),
+				"Отчет №" + reportType.getId() + " " + reportType.getName());
+		Map<String, Collection<String>> model = ReportTypeService.createHeaderModel(reportType);
 		for (Entry<String, Collection<String>> entry : model.entrySet()) {
 			if (entry.getValue() != null) {
 				setCellValue(createCellAndFormat(row2, cellNumber, headerStyle), entry.getKey());
@@ -69,90 +67,24 @@ public class ExcelTemplateGenerator {
 				for (Iterator<String> iterator = entry.getValue().iterator(); iterator.hasNext();) {
 					String bottom = (String) iterator.next();
 					setCellValue(createCellAndFormat(row5, cellNumber, headerStyle), bottom);
-					sheet.addMergedRegion(new CellRangeAddress(row5.getRowNum(), row5.getRowNum() + 2, cellNumber, cellNumber));
+					sheet.addMergedRegion(
+							new CellRangeAddress(row5.getRowNum(), row5.getRowNum() + 2, cellNumber, cellNumber));
 					if (iterator.hasNext())
 						cellNumber++;
 				}
-				sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 2, oldCellNumber, cellNumber));
+				sheet.addMergedRegion(
+						new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 2, oldCellNumber, cellNumber));
 			} else {
 				setCellValue(createCellAndFormat(row2, cellNumber, headerStyle), entry.getKey());
-				sheet.addMergedRegion(new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 5, cellNumber, cellNumber));
+				sheet.addMergedRegion(
+						new CellRangeAddress(row2.getRowNum(), row2.getRowNum() + 5, cellNumber, cellNumber));
 			}
 			cellNumber++;
 		}
-		sheet.addMergedRegion(new CellRangeAddress(row0.getRowNum(), row0.getRowNum(), row0.getFirstCellNum(), cellNumber - 1));
-		sheet.addMergedRegion(new CellRangeAddress(row1.getRowNum(), row1.getRowNum(), row1.getFirstCellNum(), cellNumber - 1));
-	}
-
-	private Map<String, Collection<String>> createModel(ReportType reportType) {
-		Map<String, Collection<String>> model = new LinkedHashMap<>();
-		buildModel(reportType.getE(), "", model);
-		buildModel(reportType.getF(), reportType.getE(), model);
-		buildModel(reportType.getG(), reportType.getF(), model);
-		buildModel(reportType.getH(), reportType.getG(), model);
-		buildModel(reportType.getI(), reportType.getH(), model);
-		buildModel(reportType.getJ(), reportType.getI(), model);
-		buildModel(reportType.getK(), reportType.getJ(), model);
-		buildModel(reportType.getL(), reportType.getK(), model);
-		buildModel(reportType.getM(), reportType.getL(), model);
-		buildModel(reportType.getN(), reportType.getM(), model);
-		buildModel(reportType.getO(), reportType.getN(), model);
-		buildModel(reportType.getP(), reportType.getO(), model);
-		buildModel(reportType.getQ(), reportType.getP(), model);
-		buildModel(reportType.getR(), reportType.getQ(), model);
-		buildModel(reportType.getS(), reportType.getR(), model);
-		buildModel(reportType.getT(), reportType.getS(), model);
-		buildModel(reportType.getU(), reportType.getT(), model);
-		buildModel(reportType.getV(), reportType.getU(), model);
-		buildModel(reportType.getW(), reportType.getV(), model);
-		buildModel(reportType.getX(), reportType.getW(), model);
-		buildModel(reportType.getY(), reportType.getX(), model);
-		buildModel(reportType.getZ(), reportType.getY(), model);
-		buildModel(reportType.getAa(), reportType.getZ(), model);
-		buildModel(reportType.getAb(), reportType.getAa(), model);
-		buildModel(reportType.getAc(), reportType.getAb(), model);
-		buildModel(reportType.getAd(), reportType.getAc(), model);
-		buildModel(reportType.getAe(), reportType.getAd(), model);
-		buildModel(reportType.getAf(), reportType.getAe(), model);
-		buildModel(reportType.getAg(), reportType.getAf(), model);
-		buildModel(reportType.getAh(), reportType.getAg(), model);
-		buildModel(reportType.getAi(), reportType.getAh(), model);
-		buildModel(reportType.getAj(), reportType.getAi(), model);
-		buildModel(reportType.getAk(), reportType.getAj(), model);
-		buildModel(reportType.getAl(), reportType.getAk(), model);
-		buildModel(reportType.getAm(), reportType.getAl(), model);
-		buildModel(reportType.getAn(), reportType.getAm(), model);
-		buildModel(reportType.getAo(), reportType.getAn(), model);
-		buildModel(reportType.getAp(), reportType.getAo(), model);
-		buildModel(reportType.getAq(), reportType.getAp(), model);
-		buildModel(reportType.getAr(), reportType.getAq(), model);
-		buildModel(reportType.getAs(), reportType.getAr(), model);
-		buildModel(reportType.getAt(), reportType.getAs(), model);
-		buildModel(reportType.getAu(), reportType.getAt(), model);
-		buildModel(reportType.getAv(), reportType.getAu(), model);
-		buildModel(reportType.getAw(), reportType.getAv(), model);
-		buildModel(reportType.getAx(), reportType.getAw(), model);
-		buildModel(reportType.getAy(), reportType.getAx(), model);
-		buildModel(reportType.getAz(), reportType.getAy(), model);
-		buildModel(reportType.getBa(), reportType.getAz(), model);
-		buildModel(reportType.getBb(), reportType.getBa(), model);
-
-		return model;
-	}
-
-	private void buildModel(String cellValue, String prevValue, Map<String, Collection<String>> model) {
-		if (cellValue.contains(HEADER_DELIMETER)) {
-			if (cellValue.split(HEADER_DELIMETER)[0].equals(prevValue.split(HEADER_DELIMETER)[0])) {
-				model.get(cellValue.split(HEADER_DELIMETER)[0]).add(cellValue.split(HEADER_DELIMETER)[1]);
-			} else {
-				Collection<String> block = new ArrayList<>();
-				block.add(cellValue.split(HEADER_DELIMETER)[1]);
-				model.put(cellValue.split(HEADER_DELIMETER)[0], block);
-			}
-		} else {
-			model.put(cellValue, null);
-		}
-
+		sheet.addMergedRegion(
+				new CellRangeAddress(row0.getRowNum(), row0.getRowNum(), row0.getFirstCellNum(), cellNumber - 1));
+		sheet.addMergedRegion(
+				new CellRangeAddress(row1.getRowNum(), row1.getRowNum(), row1.getFirstCellNum(), cellNumber - 1));
 	}
 
 	protected XSSFCell createCellAndFormat(XSSFRow row, Integer index, CellStyle style) {
@@ -175,9 +107,9 @@ public class ExcelTemplateGenerator {
 		Font titleFont = template.createFont();
 		titleFont.setFontName("Calibri");
 		titleFont.setItalic(true);
-		//titleFont.setFontHeightInPoints((short) 10);
+		// titleFont.setFontHeightInPoints((short) 10);
 		titleStyle.setFont(titleFont);
-		
+
 		headerStyle = template.createCellStyle();
 		Font headerFont = template.createFont();
 		headerFont.setBold(false);

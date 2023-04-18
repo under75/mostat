@@ -72,7 +72,9 @@ public class LpuController {
 
 	@PostMapping("/lpu/upload")
 	public String upload(Model model, @RequestParam("report") MultipartFile[] file, RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("hasError", reportDataService.parseAndSave(file)) ;
+		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		redirectAttributes.addFlashAttribute("hasError", reportDataService.parseAndSave(file, user));
 		
 		return "redirect:/lpu";
 	}

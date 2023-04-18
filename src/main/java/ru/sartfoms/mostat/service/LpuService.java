@@ -2,6 +2,9 @@ package ru.sartfoms.mostat.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -30,5 +33,17 @@ public class LpuService {
 		Lpu lpu = getById(user.getLpuId());
 		
 		return new ExcelTemplateGenerator(reportType, lpu).toExcel();
+	}
+
+	public Collection<Lpu> findByIdIn(Set<Integer> ids) {
+		return lpuRepository.findByIdIn(ids);
+	}
+
+	public Lpu getDummy() {
+		Lpu dummy = new Lpu();
+		dummy.setId(0);
+		dummy.setName("Все МО");
+		
+		return dummy;
 	}
 }
