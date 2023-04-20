@@ -3,7 +3,6 @@ package ru.sartfoms.mostat.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -28,10 +27,10 @@ public class LpuService {
 		return lpuRepository.getReferenceById(id);
 	}
 
-	public InputStream createExcel(Long id, User user) throws IOException  {
+	public InputStream createExcelTemplate(Long id, User user) throws IOException {
 		ReportType reportType = reportTypeRepository.getReferenceById(id);
 		Lpu lpu = getById(user.getLpuId());
-		
+
 		return new ExcelTemplateGenerator(reportType, lpu).toExcel();
 	}
 
@@ -43,7 +42,8 @@ public class LpuService {
 		Lpu dummy = new Lpu();
 		dummy.setId(0);
 		dummy.setName("Все МО");
-		
+
 		return dummy;
 	}
+
 }

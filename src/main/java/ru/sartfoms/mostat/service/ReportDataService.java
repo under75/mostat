@@ -1,25 +1,34 @@
 package ru.sartfoms.mostat.service;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import ru.sartfoms.mostat.entity.Lpu;
 import ru.sartfoms.mostat.entity.ReportData;
+import ru.sartfoms.mostat.entity.ReportType;
 import ru.sartfoms.mostat.entity.User;
 import ru.sartfoms.mostat.model.FormParameters;
+import ru.sartfoms.mostat.model.MOReport;
 import ru.sartfoms.mostat.repository.ReportDataRepository;
 
 @Service
 public class ReportDataService {
+	private static final Integer PAGE_SIZE = 10;
 	private final ReportDataRepository reportDataRepository;
 
 	public ReportDataService(ReportDataRepository reportDataRepository) {
@@ -40,7 +49,7 @@ public class ReportDataService {
 
 					InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 					ExcelParser parser = new ExcelParser(inputStream);
-					parser.write(reportData);
+					parser.write(reportData);//to do
 
 					reportDataRepository.save(reportData);
 					break;
@@ -135,6 +144,30 @@ public class ReportDataService {
 		return reportDatas;
 	}
 
+	public static Collection<Double> createSumRow(Collection<ReportData> reportDatas, ReportType reportType) {
+		List<Double> result = new ArrayList<Double>();
+		List<String> row;
+
+		List<String> header = (List<String>) toCollection(reportType);
+		for (ReportData reportData : reportDatas) {
+			row = (List<String>) toCollection(reportData);
+			for (int i = 0; i < row.size(); i++) {
+				if (header.get(i).matches(".*[+]$") && row.get(i) != null) {
+					Double oldVal = result.size() == i ? 0D : result.get(i);
+					try {
+						result.set(i, oldVal + Double.valueOf(row.get(i)));
+					} catch (IndexOutOfBoundsException e) {
+						result.add(Double.valueOf(row.get(i)));
+					}
+				} else {
+					result.add(null);
+				}
+			}
+		}
+
+		return result;
+	}
+
 	public static Map<Integer, Map<LocalDateTime, Map<Integer, Collection<String>>>> createDataModel(
 			Collection<ReportData> reportDatas) {
 		if (reportDatas == null)
@@ -168,59 +201,83 @@ public class ReportDataService {
 		return result;
 	}
 
-	public static Collection<String> toCollection(ReportData reportData) {
+	public static Collection<String> toCollection(MOReport report) {
 		Collection<String> result = new ArrayList<String>();
-		result.add(reportData.getE());
-		result.add(reportData.getF());
-		result.add(reportData.getG());
-		result.add(reportData.getH());
-		result.add(reportData.getI());
-		result.add(reportData.getJ());
-		result.add(reportData.getK());
-		result.add(reportData.getL());
-		result.add(reportData.getM());
-		result.add(reportData.getN());
-		result.add(reportData.getO());
-		result.add(reportData.getP());
-		result.add(reportData.getQ());
-		result.add(reportData.getR());
-		result.add(reportData.getS());
-		result.add(reportData.getT());
-		result.add(reportData.getU());
-		result.add(reportData.getV());
-		result.add(reportData.getW());
-		result.add(reportData.getX());
-		result.add(reportData.getY());
-		result.add(reportData.getZ());
-		result.add(reportData.getAa());
-		result.add(reportData.getAb());
-		result.add(reportData.getAc());
-		result.add(reportData.getAd());
-		result.add(reportData.getAe());
-		result.add(reportData.getAf());
-		result.add(reportData.getAg());
-		result.add(reportData.getAh());
-		result.add(reportData.getAi());
-		result.add(reportData.getAj());
-		result.add(reportData.getAk());
-		result.add(reportData.getAl());
-		result.add(reportData.getAm());
-		result.add(reportData.getAn());
-		result.add(reportData.getAo());
-		result.add(reportData.getAp());
-		result.add(reportData.getAq());
-		result.add(reportData.getAr());
-		result.add(reportData.getAs());
-		result.add(reportData.getAt());
-		result.add(reportData.getAu());
-		result.add(reportData.getAv());
-		result.add(reportData.getAw());
-		result.add(reportData.getAx());
-		result.add(reportData.getAy());
-		result.add(reportData.getAz());
-		result.add(reportData.getBa());
-		result.add(reportData.getBb());
+		result.add(report.getE());
+		result.add(report.getF());
+		result.add(report.getG());
+		result.add(report.getH());
+		result.add(report.getI());
+		result.add(report.getJ());
+		result.add(report.getK());
+		result.add(report.getL());
+		result.add(report.getM());
+		result.add(report.getN());
+		result.add(report.getO());
+		result.add(report.getP());
+		result.add(report.getQ());
+		result.add(report.getR());
+		result.add(report.getS());
+		result.add(report.getT());
+		result.add(report.getU());
+		result.add(report.getV());
+		result.add(report.getW());
+		result.add(report.getX());
+		result.add(report.getY());
+		result.add(report.getZ());
+		result.add(report.getAa());
+		result.add(report.getAb());
+		result.add(report.getAc());
+		result.add(report.getAd());
+		result.add(report.getAe());
+		result.add(report.getAf());
+		result.add(report.getAg());
+		result.add(report.getAh());
+		result.add(report.getAi());
+		result.add(report.getAj());
+		result.add(report.getAk());
+		result.add(report.getAl());
+		result.add(report.getAm());
+		result.add(report.getAn());
+		result.add(report.getAo());
+		result.add(report.getAp());
+		result.add(report.getAq());
+		result.add(report.getAr());
+		result.add(report.getAs());
+		result.add(report.getAt());
+		result.add(report.getAu());
+		result.add(report.getAv());
+		result.add(report.getAw());
+		result.add(report.getAx());
+		result.add(report.getAy());
+		result.add(report.getAz());
+		result.add(report.getBa());
+		result.add(report.getBb());
 
 		return result;
+	}
+
+	public InputStream createExcel(ReportType reportType, Lpu lpu, FormParameters formParams) throws IOException {
+		return new ExcelReportGenerator(reportType, lpu).createBody(createDataModel(getDataByParams(formParams)))
+				.createSumRow(createSumRow(getDataByParams(formParams), reportType)).toExcel();
+	}
+
+	public Page<ReportData> findByLpuId(Integer lpuId, Optional<Integer> page) {
+		int currentPage = page.orElse(1);
+		PageRequest pageRequest = PageRequest.of(currentPage - 1, PAGE_SIZE);
+
+		return reportDataRepository.findByLpuIdOrderByDateTime(lpuId, pageRequest);
+	}
+
+	public InputStream getReport(Long typeId, LocalDateTime dateTime, Integer lpuId) {
+		ReportData report = reportDataRepository.findByTypeIdAndLpuIdAndDateTime(typeId,lpuId,dateTime).stream().findAny().get();
+		byte[] reportFile = null;
+		if (report != null) {
+			reportFile = report.getFile();
+		} else {
+			throw new NullPointerException();
+		}
+		
+		return new ByteArrayInputStream(reportFile);
 	}
 }

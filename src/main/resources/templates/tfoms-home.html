@@ -68,8 +68,10 @@ div.scrolltable {
 			<br>
 			<div class="row d-flex justify-content-center"
 				th:if="${formParams.lpuId != null}">
-				<div class="col-sm-1"><input type="hidden" name="show" value="0"/>
-					<input type="button" value="Cмотреть отчет" onclick="this.form.show.value=1;this.form.submit()"
+				<div class="col-sm-1">
+					<input type="hidden" name="show" value="0" /> <input type="button"
+						value="Cмотреть отчет"
+						onclick="this.form.show.value=1;this.form.submit()"
 						class="btn btn-sm btn-primary" />
 				</div>
 				<div class="col-sm-2 d-flex flex-nowrap">
@@ -82,6 +84,11 @@ div.scrolltable {
 						class="form-control form-control-sm"
 						th:classappend="${#fields.hasErrors('formParams.dtTo')} ? 'is-invalid' : 'is-valid'" />
 				</div>
+				<div class="col-sm-1">
+					<input type="button" value="В Excel"
+						onclick="this.form.action='/tfoms/excel';this.form.submit();this.form.action='/tfoms'"
+						class="btn btn-sm btn-primary" />
+				</div>
 			</div>
 		</form>
 
@@ -89,15 +96,15 @@ div.scrolltable {
 			<table class="table-sm table-bordered caption-top">
 				<caption th:text="'№' + ${reportType.id} +' '+${reportType.name}"></caption>
 				<thead>
-					<tr class="small">
-						<th class="text-bg-info" rowspan="2">Код МО</th>
-						<th class="text-bg-info" rowspan="2">Дата отчета</th>
+					<tr class="small text-center">
+						<th rowspan="2">Код МО</th>
+						<th rowspan="2">Дата отчета</th>
 						<th th:each="entry, iStat : ${headerModel.entrySet()}"
 							th:rowspan="${entry.value==null ? '2' : '1'}"
 							th:colspan="${entry.value==null ? '1' : entry.value.size()}"
 							th:text="${entry.key}" />
 					</tr>
-					<tr class="small">
+					<tr class="small text-center">
 						<th:block th:each="value, iStat : ${headerModel.values()}">
 							<th th:each="col, iStat : ${value}" th:if="${value != null}"
 								th:text="${col}" />
@@ -108,9 +115,9 @@ div.scrolltable {
 					<th:block th:each="lpuMap : ${dataModel.entrySet()}">
 						<th:block th:each="dateMap : ${lpuMap.value}">
 							<th:block th:each="rowMap : ${dateMap.value}">
-								<tr class="small">
-									<td class="text-bg-info" th:text="${lpuMap.key}"></td>
-									<td class="text-bg-info"
+								<tr class="small text-end">
+									<td class="text-center" th:text="${lpuMap.key}"></td>
+									<td
 										th:text="${#temporals.format(dateMap.key, 'dd.MM.yyyy HH:mm:ss')}"></td>
 									<th:block th:each="col : ${rowMap.value}">
 										<td th:text="${col}"></td>
@@ -119,6 +126,12 @@ div.scrolltable {
 							</th:block>
 						</th:block>
 					</th:block>
+					<tr class="small text-bg-info text-end fw-bold">
+						<td colspan="2">Сумма:</td>
+						<th:block th:each="col : ${sumRow}">
+							<td th:text="${col}"></td>
+						</th:block>
+					</tr>
 				</tbody>
 			</table>
 		</div>

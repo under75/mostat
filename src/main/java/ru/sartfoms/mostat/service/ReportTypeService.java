@@ -2,6 +2,7 @@ package ru.sartfoms.mostat.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class ReportTypeService {
 	public Page<ReportType> findAll(Optional<Integer> page) {
 		int currentPage = page.orElse(1);
 		PageRequest pageRequest = PageRequest.of(currentPage - 1, PAGE_SIZE);
-		
+
 		return reportTypeRepository.findAll(pageRequest);
 	}
 
@@ -37,7 +38,7 @@ public class ReportTypeService {
 	public ReportType getById(Long reportTypeId) {
 		return reportTypeRepository.getReferenceById(reportTypeId);
 	}
-	
+
 	public static Map<String, Collection<String>> createHeaderModel(ReportType reportType) {
 		Map<String, Collection<String>> model = new LinkedHashMap<>();
 		buildModel(reportType.getE(), "", model);
@@ -95,6 +96,7 @@ public class ReportTypeService {
 	}
 
 	private static void buildModel(String cellValue, String prevValue, Map<String, Collection<String>> model) {
+		cellValue = cellValue.replaceFirst("[+]$", "");
 		if (cellValue.contains(HEADER_DELIMETER)) {
 			if (cellValue.split(HEADER_DELIMETER)[0].equals(prevValue.split(HEADER_DELIMETER)[0])) {
 				model.get(cellValue.split(HEADER_DELIMETER)[0]).add(cellValue.split(HEADER_DELIMETER)[1]);
@@ -107,5 +109,15 @@ public class ReportTypeService {
 			model.put(cellValue, null);
 		}
 
+	}
+
+	public Map<Long, String> findAllAsMap() {
+		Collection<ReportType> reportTypes = reportTypeRepository.findAll();
+		Map<Long, String> result = new HashMap<>();
+		for (ReportType reportType : reportTypes) {
+			result.put(reportType.getId(), reportType.getName());
+		}
+
+		return result;
 	}
 }

@@ -23,235 +23,88 @@ public class ExcelParser {
 
 	public void write(ReportData entity) throws IOException {
 		String sheetName = sheet.getSheetName();
-		entity.setTypeId(Long.valueOf(sheetName.substring(sheetName.indexOf("№")+1)));
-		
+		entity.setTypeId(Long.valueOf(sheetName.substring(sheetName.indexOf("№") + 1)));
+
 		Iterator<Row> rowIterator = sheet.iterator();
 		Row row;
 		while (rowIterator.hasNext()) {
 			row = rowIterator.next();
 			if (row.getRowNum() < FIRST_ROW)
 				continue;
-			
+
 			entity.setRowNum(row.getRowNum() - FIRST_ROW + 1);
-			Iterator<Cell> cellIterator = row.cellIterator();
-			Cell cell;
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setE(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setF(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setG(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setH(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setI(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setJ(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setK(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setL(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setM(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setN(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setO(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setP(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setQ(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setR(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setS(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setT(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setU(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setV(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setW(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setX(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setY(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setZ(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAa(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAb(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAc(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAd(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAe(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAf(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAg(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAh(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAi(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAj(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAk(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAl(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAm(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAn(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAo(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAp(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAq(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAr(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAs(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAt(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAu(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAv(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAw(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAx(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAy(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setAz(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setBa(getValue(cell));
-			}
-			if (cellIterator.hasNext()) {
-				cell = cellIterator.next();
-				entity.setBb(getValue(cell));
-			}
+			int colNum = 0;
+			entity.setE(getValue(row.getCell(colNum)));
+			entity.setF(getValue(row.getCell(++colNum)));
+			entity.setG(getValue(row.getCell(++colNum)));
+			entity.setH(getValue(row.getCell(++colNum)));
+			entity.setI(getValue(row.getCell(++colNum)));
+			entity.setJ(getValue(row.getCell(++colNum)));
+			entity.setK(getValue(row.getCell(++colNum)));
+			entity.setL(getValue(row.getCell(++colNum)));
+			entity.setM(getValue(row.getCell(++colNum)));
+			entity.setN(getValue(row.getCell(++colNum)));
+			entity.setO(getValue(row.getCell(++colNum)));
+			entity.setP(getValue(row.getCell(++colNum)));
+			entity.setQ(getValue(row.getCell(++colNum)));
+			entity.setR(getValue(row.getCell(++colNum)));
+			entity.setS(getValue(row.getCell(++colNum)));
+			entity.setT(getValue(row.getCell(++colNum)));
+			entity.setU(getValue(row.getCell(++colNum)));
+			entity.setV(getValue(row.getCell(++colNum)));
+			entity.setW(getValue(row.getCell(++colNum)));
+			entity.setX(getValue(row.getCell(++colNum)));
+			entity.setY(getValue(row.getCell(++colNum)));
+			entity.setZ(getValue(row.getCell(++colNum)));
+			entity.setAa(getValue(row.getCell(++colNum)));
+			entity.setAb(getValue(row.getCell(++colNum)));
+			entity.setAc(getValue(row.getCell(++colNum)));
+			entity.setAd(getValue(row.getCell(++colNum)));
+			entity.setAe(getValue(row.getCell(++colNum)));
+			entity.setAf(getValue(row.getCell(++colNum)));
+			entity.setAg(getValue(row.getCell(++colNum)));
+			entity.setAh(getValue(row.getCell(++colNum)));
+			entity.setAi(getValue(row.getCell(++colNum)));
+			entity.setAj(getValue(row.getCell(++colNum)));
+			entity.setAk(getValue(row.getCell(++colNum)));
+			entity.setAl(getValue(row.getCell(++colNum)));
+			entity.setAm(getValue(row.getCell(++colNum)));
+			entity.setAn(getValue(row.getCell(++colNum)));
+			entity.setAo(getValue(row.getCell(++colNum)));
+			entity.setAp(getValue(row.getCell(++colNum)));
+			entity.setAq(getValue(row.getCell(++colNum)));
+			entity.setAr(getValue(row.getCell(++colNum)));
+			entity.setAs(getValue(row.getCell(++colNum)));
+			entity.setAt(getValue(row.getCell(++colNum)));
+			entity.setAu(getValue(row.getCell(++colNum)));
+			entity.setAv(getValue(row.getCell(++colNum)));
+			entity.setAw(getValue(row.getCell(++colNum)));
+			entity.setAx(getValue(row.getCell(++colNum)));
+			entity.setAy(getValue(row.getCell(++colNum)));
+			entity.setAz(getValue(row.getCell(++colNum)));
+			entity.setBa(getValue(row.getCell(++colNum)));
+			entity.setBb(getValue(row.getCell(++colNum)));
 		}
 		workbook.close();
 	}
-	
+
 	public String getValue(Cell cell) {
 		String cellValue = null;
-		switch (cell.getCellType()) {
-		case NUMERIC:
-			cellValue = String.valueOf(cell.getNumericCellValue());
-			break;
-		case STRING:
-			cellValue = cell.getStringCellValue();
-			break;
-		default:
-			break;
+		try {
+			switch (cell.getCellType()) {
+			case NUMERIC:
+				cellValue = String.valueOf(cell.getNumericCellValue());
+				break;
+			case STRING:
+				cellValue = cell.getStringCellValue();
+				break;
+			default:
+				break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
+
 		return cellValue;
 	}
 }

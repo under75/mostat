@@ -1,6 +1,7 @@
 package ru.sartfoms.mostat.controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.core.io.InputStreamResource;
@@ -47,13 +48,24 @@ public class LpuController {
 
 		model.addAttribute("lpu", lpuService.getById(user.getLpuId()));
 		model.addAttribute("reportTypesPage", reportTypeService.findAll(page));
-		
+
 		return "lpu-home";
+	}
+
+	@GetMapping("/lpu/reports")
+	public String reportsList(Model model, @RequestParam("page") Optional<Integer> page) {
+		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
+
+		model.addAttribute("lpu", lpuService.getById(user.getLpuId()));
+		model.addAttribute("reportDatasPage", reportDataService.findByLpuId(user.getLpuId(), page));
+		model.addAttribute("reportTypesMap", reportTypeService.findAllAsMap());
+
+		return "lpu-reports-list";
 	}
 
 	@GetMapping("/lpu/download/{id}")
 	@ResponseBody
-	public ResponseEntity<?> download(Model model, @PathVariable("id") Long id) {
+	public ResponseEntity<?> downloadTemplate(@PathVariable("id") Long id) {
 		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
 
 		ResponseEntity<?> resource;
@@ -61,7 +73,7 @@ public class LpuController {
 			resource = ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=report" + id + ".xlsx")
 					.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
-					.body(new InputStreamResource(lpuService.createExcel(id, user)));
+					.body(new InputStreamResource(lpuService.createExcelTemplate(id, user)));
 		} catch (IOException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -70,12 +82,34 @@ public class LpuController {
 
 	}
 
-	@PostMapping("/lpu/upload")
-	public String upload(Model model, @RequestParam("report") MultipartFile[] file, RedirectAttributes redirectAttributes) {
+	@GetMapping("/lpu/reports/download/{typeId}/{dateTimeStr}")
+	@ResponseBody
+	public ResponseEntity<?> downloadReport(@PathVariable("typeId") Long typeId,
+			@PathVariable("dateTimeStr") String dateTimeStr) {
 		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
-		
+		LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr);
+		ResponseEntity<?> resource;
+		try {
+			resource = ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION,
+							"attachment; filename=report" + typeId + "_" + dateTimeStr + ".xlsx")
+					.contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+					.body(new InputStreamResource(reportDataService.getReport(typeId, dateTime, user.getLpuId())));
+		} catch (NullPointerException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return resource;
+
+	}
+
+	@PostMapping("/lpu/upload")
+	public String upload(Model model, @RequestParam("report") MultipartFile[] file,
+			RedirectAttributes redirectAttributes) {
+		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
+
 		redirectAttributes.addFlashAttribute("hasError", reportDataService.parseAndSave(file, user));
-		
+
 		return "redirect:/lpu";
 	}
 }

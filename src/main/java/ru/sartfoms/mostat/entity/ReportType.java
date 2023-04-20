@@ -5,9 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import ru.sartfoms.mostat.model.MOReport;
+
 @Entity
 @Table(name = "MO_REPORT_TYPE", schema = "STATOWNER")
-public class ReportType {
+public class ReportType implements MOReport {
 	@Id
 	@Column(name = "ID")
 	private Long id;

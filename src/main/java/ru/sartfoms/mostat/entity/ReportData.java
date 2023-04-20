@@ -9,10 +9,12 @@ import javax.persistence.IdClass;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import ru.sartfoms.mostat.model.MOReport;
+
 @Entity
 @Table(name = "MO_REPORT_DATA", schema = "STATOWNER")
 @IdClass(ReportDataId.class)
-public class ReportData {
+public class ReportData implements MOReport{
 	@Id
 	@Column(name = "REP_TYPE_ID")
 	private Long typeId;

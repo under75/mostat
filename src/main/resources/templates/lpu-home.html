@@ -13,7 +13,13 @@
 <body>
 	<div class="container">
 		<div th:insert="menu :: navbar"></div>
-		<br />
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb ">
+				<li class="breadcrumb-item active">Главная</li>
+				<li class="breadcrumb-item" aria-current="page"><a
+					href="/lpu/reports">Список загруженных отчетов</a></li>
+			</ol>
+		</nav>
 		<form th:method="POST" enctype="multipart/form-data"
 			th:action="@{/lpu/upload}" id="repForm">
 			<input type="hidden" id="page" name="page" />
@@ -39,7 +45,7 @@
 							<td th:text="${reportType.id}" />
 							<td class="btn-link" style="cursor: pointer;"
 								th:text="${reportType.name}"
-								th:onclick="|location.href='@{/lpu/download}'+'/'+'${reportType.id}'|" />
+								th:onclick="|location.href='@{/lpu/download}/${reportType.id}'|" />
 							<td><input type="file" name="report"
 								th:id="'rep' + ${reportType.id}"
 								class="form-control form-control-sm"
@@ -84,8 +90,7 @@
 		</form>
 	</div>
 	<footer class="text-center text-lg-start fixed-bottom"
-		th:fragment="footer" th:insert="copyright">
-	</footer>
+		th:fragment="footer" th:insert="copyright"> </footer>
 	<script type="text/javascript">
 		function goToPage(page) {
 			document.getElementById("repForm").page.value = page;

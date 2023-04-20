@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Формирование отчетности'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" />
+</head>
+<body>
+	<div class="container">
+		<div th:insert="menu :: navbar"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb ">
+				<li class="breadcrumb-item" aria-current="page"><a href="/lpu">Главная</a></li>
+				<li class="breadcrumb-item active">Список загруженных отчетов</li>
+			</ol>
+		</nav>
+		<h4 th:text="${lpu.name}"></h4>
+		<form th:method="POST" th:action="@{/lpu/reports/download}"
+			id="repForm">
+			<table class="table table-sm table-bordered">
+				<thead class="table-light">
+					<tr class="small">
+						<th>Код</th>
+						<th>Дата загрузки</th>
+						<th>Отчет</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="small"
+						th:each="reportData, iStat : ${reportDatasPage.content}">
+						<td th:text="${reportData.typeId}" />
+						<td
+							th:text="${#temporals.format(reportData.dateTime, 'dd.MM.yyyy HH:mm:ss')}"></td>
+						<td
+							th:attr="data-typeId=${reportData.typeId},data-date=${reportData.dateTime.toString()}"
+							class="btn-link" style="cursor: pointer;"
+							th:text="${reportTypesMap.get(reportData.typeId)}"
+							onclick="download(this.getAttribute('data-typeId'), this.getAttribute('data-date'))" />
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start fixed-bottom"
+		th:fragment="footer" th:insert="copyright"> </footer>
+	<script type="text/javascript">
+	function download(typeId, dateTime) {
+		location.href="/lpu/reports/download/" + typeId + "/" + dateTime
+	}
+	</script>
+	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
