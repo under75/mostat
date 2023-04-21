@@ -112,12 +112,12 @@ div.scrolltable {
 					</tr>
 				</thead>
 				<tbody th:if="${dataModel != null}">
-					<th:block th:each="lpuMap : ${dataModel.entrySet()}">
-						<th:block th:each="dateMap : ${lpuMap.value}">
-							<th:block th:each="rowMap : ${dateMap.value}">
+					<th:block th:each="lpuMap, lpuStat : ${dataModel.entrySet()}">
+						<th:block th:each="dateMap, dateStat : ${lpuMap.value}">
+							<th:block th:each="rowMap, rowStat : ${dateMap.value}">
 								<tr class="small text-end">
-									<td class="text-center" th:text="${lpuMap.key}"></td>
-									<td
+									<td class="text-center" th:if="${rowStat.index == 0}" th:rowspan="${rowStat.size}" th:text="${lpuMap.key}"></td>
+									<td th:if="${rowStat.index == 0}" th:rowspan="${rowStat.size}"
 										th:text="${#temporals.format(dateMap.key, 'dd.MM.yyyy HH:mm:ss')}"></td>
 									<th:block th:each="col : ${rowMap.value}">
 										<td th:text="${col}"></td>

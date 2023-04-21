@@ -24,13 +24,20 @@ public class ExcelReportGenerator extends ExcelGenerator {
 	public ExcelReportGenerator createBody(
 			Map<Integer, Map<LocalDateTime, Map<Integer, Collection<String>>>> dataModel) {
 		XSSFRow dataRow = sheet.createRow(rowNum);
+		int lpuFirstRowNum;
 		for (Entry<Integer, Map<LocalDateTime, Map<Integer, Collection<String>>>> lpuEntry : dataModel.entrySet()) {
 			int cellNumber = 0;
+			lpuFirstRowNum = dataRow.getRowNum();
 			setCellValue(createCellAndFormat(dataRow, cellNumber, headerStyle), String.valueOf(lpuEntry.getKey()));
-			cellNumber++;
 			for (Entry<LocalDateTime, Map<Integer, Collection<String>>> dateEntry : lpuEntry.getValue().entrySet()) {
+				cellNumber = 1;
 				setCellValue(createCellAndFormat(dataRow, cellNumber, headerStyle),
 						dateEntry.getKey().format(DateService.DATE_TIME_FORMATTER));
+				if (dateEntry.getValue().entrySet().size() > 1) {
+					sheet.addMergedRegion(new CellRangeAddress(dataRow.getRowNum(),
+							dataRow.getRowNum() + dateEntry.getValue().entrySet().size() - 1, 1, 1));
+				}
+				
 				cellNumber++;
 				for (Entry<Integer, Collection<String>> rowEntry : dateEntry.getValue().entrySet()) {
 					for (String value : rowEntry.getValue()) {
@@ -42,8 +49,10 @@ public class ExcelReportGenerator extends ExcelGenerator {
 					dataRow = sheet.createRow(rowNum);
 				}
 			}
+			sheet.addMergedRegion(new CellRangeAddress(lpuFirstRowNum,
+					dataRow.getRowNum() - 1, 0, 0));
 		}
-
+		
 		return this;
 	}
 

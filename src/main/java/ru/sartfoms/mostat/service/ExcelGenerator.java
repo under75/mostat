@@ -6,8 +6,10 @@ import java.io.IOException;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -81,13 +83,12 @@ public abstract class ExcelGenerator {
 		headerStyle.setWrapText(true);
 		headerStyle.setAlignment(HorizontalAlignment.CENTER);
 		headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-		
+
 		bodyStyle = template.createCellStyle();
 		bodyStyle.setFont(headerFont);
 		bodyStyle.setWrapText(true);
 		bodyStyle.setAlignment(HorizontalAlignment.RIGHT);
-		
-		
+
 		sumRowStyle = template.createCellStyle();
 		Font boldFont = template.createFont();
 		boldFont.setBold(true);

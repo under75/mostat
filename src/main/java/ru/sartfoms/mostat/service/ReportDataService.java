@@ -6,13 +6,18 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -40,18 +45,21 @@ public class ReportDataService {
 		try {
 			for (MultipartFile file : files) {
 				if (!file.getName().isEmpty()) {
-
-					ReportData reportData = new ReportData();
-					reportData.setUserName(user.getName());
-					reportData.setLpuId(user.getLpuId());
-					reportData.setDateTime(LocalDateTime.now());
-					reportData.setFile(file.getBytes());
-
 					InputStream inputStream = new ByteArrayInputStream(file.getBytes());
 					ExcelParser parser = new ExcelParser(inputStream);
-					parser.write(reportData);//to do
-
-					reportDataRepository.save(reportData);
+					Iterator<Row> iterator = parser.getRowIterator();
+					while (iterator.hasNext()) {
+						Row row = iterator.next();
+						if (row.getRowNum() >= ExcelParser.START_ROW_NUM) {
+							ReportData reportData = new ReportData();
+							reportData.setUserName(user.getName());
+							reportData.setLpuId(user.getLpuId());
+							reportData.setDateTime(LocalDateTime.now());
+							reportData.setFile(file.getBytes());
+							if (parser.write(reportData, row))
+								reportDataRepository.save(reportData);
+						}
+					}
 					break;
 				}
 			}
@@ -145,22 +153,25 @@ public class ReportDataService {
 	}
 
 	public static Collection<Double> createSumRow(Collection<ReportData> reportDatas, ReportType reportType) {
-		List<Double> result = new ArrayList<Double>();
+		List<Double> result = new ArrayList<>();
 		List<String> row;
 
 		List<String> header = (List<String>) toCollection(reportType);
+		// init result
+		for (int i = 0; i < header.size(); i++) {
+			result.add(null);
+		}
 		for (ReportData reportData : reportDatas) {
 			row = (List<String>) toCollection(reportData);
 			for (int i = 0; i < row.size(); i++) {
+				// summation sign
 				if (header.get(i).matches(".*[+]$") && row.get(i) != null) {
-					Double oldVal = result.size() == i ? 0D : result.get(i);
-					try {
+					Double oldVal = result.get(i);
+					if (oldVal == null) {
+						result.set(i, Double.valueOf(row.get(i)));
+					} else {
 						result.set(i, oldVal + Double.valueOf(row.get(i)));
-					} catch (IndexOutOfBoundsException e) {
-						result.add(Double.valueOf(row.get(i)));
 					}
-				} else {
-					result.add(null);
 				}
 			}
 		}
@@ -174,18 +185,18 @@ public class ReportDataService {
 			return null;
 
 		Map<Integer, Map<LocalDateTime, Map<Integer, Collection<String>>>> result = new LinkedHashMap<>();
-		Map<LocalDateTime, Map<Integer, Collection<String>>> dateMap = new LinkedHashMap<>();
-		Map<Integer, Collection<String>> rowMap = new LinkedHashMap<>();
 
 		Set<Integer> lpuIds = reportDatas.stream().map(ReportData::getLpuId).collect(Collectors.toSet());
 		for (Integer lpuId : lpuIds) {
-			Set<LocalDateTime> dateTimes = reportDatas.stream()
-					.filter(rd -> rd.getLpuId().intValue() == lpuId.intValue()).map(ReportData::getDateTime)
-					.collect(Collectors.toSet());
+			NavigableSet<LocalDateTime> dateTimes = new TreeSet<>(Comparator.reverseOrder());
+			dateTimes.addAll(reportDatas.stream().filter(rd -> rd.getLpuId().intValue() == lpuId.intValue())
+					.map(ReportData::getDateTime).collect(Collectors.toSet()));
+			Map<LocalDateTime, Map<Integer, Collection<String>>> dateMap = new LinkedHashMap<>();
 			for (LocalDateTime dateTime : dateTimes) {
 				Set<Integer> rowNums = reportDatas.stream().filter(rd -> rd.getLpuId().intValue() == lpuId.intValue())
 						.filter(dt -> dt.getDateTime().equals(dateTime)).map(ReportData::getRowNum)
 						.collect(Collectors.toSet());
+				Map<Integer, Collection<String>> rowMap = new LinkedHashMap<>();
 				for (Integer rowNum : rowNums) {
 					ReportData reportData = reportDatas.stream()
 							.filter(rd -> rd.getLpuId().intValue() == lpuId.intValue())
@@ -266,18 +277,19 @@ public class ReportDataService {
 		int currentPage = page.orElse(1);
 		PageRequest pageRequest = PageRequest.of(currentPage - 1, PAGE_SIZE);
 
-		return reportDataRepository.findByLpuIdOrderByDateTime(lpuId, pageRequest);
+		return reportDataRepository.findByLpuIdAndRowNumOrderByDateTimeDesc(lpuId, 1, pageRequest);
 	}
 
 	public InputStream getReport(Long typeId, LocalDateTime dateTime, Integer lpuId) {
-		ReportData report = reportDataRepository.findByTypeIdAndLpuIdAndDateTime(typeId,lpuId,dateTime).stream().findAny().get();
+		ReportData report = reportDataRepository.findByTypeIdAndLpuIdAndDateTime(typeId, lpuId, dateTime).stream()
+				.findAny().get();
 		byte[] reportFile = null;
 		if (report != null) {
 			reportFile = report.getFile();
 		} else {
 			throw new NullPointerException();
 		}
-		
+
 		return new ByteArrayInputStream(reportFile);
 	}
 }
