@@ -93,8 +93,11 @@
 		th:fragment="footer" th:insert="copyright"> </footer>
 	<script type="text/javascript">
 		function goToPage(page) {
-			document.getElementById("repForm").page.value = page;
-			document.getElementById("repForm").submit();
+			form = document.getElementById("repForm");
+			form.page.value = page;
+			form.action = "/lpu";
+			form.submit();
+			form.action = "/lpu/upload";
 		}
 	</script>
 	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>

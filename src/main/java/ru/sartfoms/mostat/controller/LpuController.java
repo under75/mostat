@@ -52,7 +52,7 @@ public class LpuController {
 		return "lpu-home";
 	}
 
-	@GetMapping("/lpu/reports")
+	@RequestMapping("/lpu/reports")
 	public String reportsList(Model model, @RequestParam("page") Optional<Integer> page) {
 		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
 

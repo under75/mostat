@@ -21,7 +21,7 @@
 		</nav>
 		<h4 th:text="${lpu.name}"></h4>
 		<form th:method="POST" th:action="@{/lpu/reports/download}"
-			id="repForm">
+			id="repForm"><input type="hidden" id="page" name="page" />
 			<table class="table table-sm table-bordered">
 				<thead class="table-light">
 					<tr class="small">
@@ -44,6 +44,39 @@
 					</tr>
 				</tbody>
 			</table>
+			<nav aria-label="Pagination"
+					th:if="${reportDatasPage.totalPages gt 1}">
+					<ul
+						class="pagination pagination-sm justify-content-center font-weight-medium">
+						<li class="page-item"
+							th:classappend="${reportDatasPage.number eq 0} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${reportDatasPage.number eq 0} ? 'disabled'"
+								th:onclick="|goToPage(${reportDatasPage.number lt 2 ? 1 : reportDatasPage.number})|">
+								<p>&#60;&#60;
+								<p>
+							</button>
+						</li>
+						<li class="page-item"
+							th:classappend="${i eq reportDatasPage.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence(reportDatasPage.totalPages > reportDatasPage.number + 10 ? reportDatasPage.number + 1 : reportDatasPage.totalPages - 10 > 0 ? reportDatasPage.totalPages - 10 : 1, reportDatasPage.totalPages > 10 + reportDatasPage.number ? reportDatasPage.number + 10 : reportDatasPage.totalPages, 1)}">
+							<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
+							th:text="${i}"><span class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item disabled"
+							th:if="${reportDatasPage.number + 10 < reportDatasPage.totalPages}"><a
+							class="page-link" href="#"> ... </a></li>
+						<li class="page-item"
+							th:classappend="${reportDatasPage.number + 1 eq reportDatasPage.totalPages} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${reportDatasPage.number + 1 eq reportDatasPage.totalPages} ? 'disabled'"
+								th:onclick="|goToPage(${reportDatasPage.number + 2})|">
+								<p>&#62;&#62;
+								<p>
+							</button>
+						</li>
+					</ul>
+				</nav>
 		</form>
 	</div>
 	<footer class="text-center text-lg-start fixed-bottom"
@@ -51,6 +84,13 @@
 	<script type="text/javascript">
 	function download(typeId, dateTime) {
 		location.href="/lpu/reports/download/" + typeId + "/" + dateTime
+	}
+	function goToPage(page) {
+		form = document.getElementById("repForm");
+		form.page.value = page;
+		form.action = "/lpu/reports";
+		form.submit();
+		form.action = "/lpu/reports/download";
 	}
 	</script>
 	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
