@@ -62,7 +62,7 @@ public class LpuController {
 
 		return "lpu-reports-list";
 	}
-
+	
 	@GetMapping("/lpu/download/{id}")
 	@ResponseBody
 	public ResponseEntity<?> downloadTemplate(@PathVariable("id") Long id) {
@@ -101,6 +101,15 @@ public class LpuController {
 
 		return resource;
 
+	}
+	
+	@GetMapping("/lpu/reports/delete/{typeId}/{dateTimeStr}")
+	public String deleteReport(@PathVariable("typeId") Long typeId,
+			@PathVariable("dateTimeStr") String dateTimeStr) {
+				
+		reportDataService.delete(typeId, dateTimeStr);
+		
+		return "redirect:/lpu/reports";
 	}
 
 	@PostMapping("/lpu/upload")

@@ -3,6 +3,8 @@ package ru.sartfoms.mostat.service;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -165,12 +167,14 @@ public class ReportDataService {
 			row = (List<String>) toCollection(reportData);
 			for (int i = 0; i < row.size(); i++) {
 				// summation sign
-				if (header.get(i).matches(".*[+]$") && row.get(i) != null) {
+				if (header.get(i) != null && header.get(i).trim().matches(".*[+]$") && row.get(i) != null) {
 					Double oldVal = result.get(i);
 					if (oldVal == null) {
-						result.set(i, Double.valueOf(row.get(i)));
+						result.set(i, new BigDecimal(Double.valueOf(row.get(i))).setScale(2, RoundingMode.HALF_UP)
+								.doubleValue());
 					} else {
-						result.set(i, oldVal + Double.valueOf(row.get(i)));
+						result.set(i, new BigDecimal(oldVal + Double.valueOf(row.get(i)))
+								.setScale(2, RoundingMode.HALF_UP).doubleValue());
 					}
 				}
 			}
@@ -291,5 +295,12 @@ public class ReportDataService {
 		}
 
 		return new ByteArrayInputStream(reportFile);
+	}
+
+	public void delete(Long typeId, String dateTimeStr) {
+		ReportData reportData = reportDataRepository.findByTypeIdAndDateTime(typeId, LocalDateTime.parse(dateTimeStr));
+
+		reportDataRepository.delete(reportData);
+
 	}
 }

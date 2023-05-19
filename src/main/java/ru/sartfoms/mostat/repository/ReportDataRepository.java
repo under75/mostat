@@ -36,4 +36,6 @@ public interface ReportDataRepository extends JpaRepository<ReportData, ReportDa
 
 	Page<ReportData> findByLpuIdAndRowNumOrderByDateTimeDesc(Integer lpuId, int i, PageRequest pageRequest);
 
+	ReportData findByTypeIdAndDateTime(Long typeId, LocalDateTime parse);
+
 }

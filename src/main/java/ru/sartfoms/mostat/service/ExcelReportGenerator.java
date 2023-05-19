@@ -37,7 +37,7 @@ public class ExcelReportGenerator extends ExcelGenerator {
 					sheet.addMergedRegion(new CellRangeAddress(dataRow.getRowNum(),
 							dataRow.getRowNum() + dateEntry.getValue().entrySet().size() - 1, 1, 1));
 				}
-				
+
 				cellNumber++;
 				for (Entry<Integer, Collection<String>> rowEntry : dateEntry.getValue().entrySet()) {
 					for (String value : rowEntry.getValue()) {
@@ -49,10 +49,11 @@ public class ExcelReportGenerator extends ExcelGenerator {
 					dataRow = sheet.createRow(rowNum);
 				}
 			}
-			sheet.addMergedRegion(new CellRangeAddress(lpuFirstRowNum,
-					dataRow.getRowNum() - 1, 0, 0));
+			//to merge a MOCODE cells
+			if (lpuFirstRowNum != dataRow.getRowNum() - 1)
+				sheet.addMergedRegion(new CellRangeAddress(lpuFirstRowNum, dataRow.getRowNum() - 1, 0, 0));
 		}
-		
+
 		return this;
 	}
 
