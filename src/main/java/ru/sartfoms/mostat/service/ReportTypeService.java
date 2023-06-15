@@ -5,10 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import ru.sartfoms.mostat.entity.ReportType;
@@ -16,19 +13,11 @@ import ru.sartfoms.mostat.repository.ReportTypeRepository;
 
 @Service
 public class ReportTypeService {
-	private static final Integer PAGE_SIZE = 10;
 	private final ReportTypeRepository reportTypeRepository;
 	protected final static String HEADER_DELIMETER = "::";
 
 	public ReportTypeService(ReportTypeRepository reportTypeRepository) {
 		this.reportTypeRepository = reportTypeRepository;
-	}
-
-	public Page<ReportType> findAll(Optional<Integer> page) {
-		int currentPage = page.orElse(1);
-		PageRequest pageRequest = PageRequest.of(currentPage - 1, PAGE_SIZE);
-
-		return reportTypeRepository.findAll(pageRequest);
 	}
 
 	public Collection<ReportType> findAll() {

@@ -1,6 +1,8 @@
 package ru.sartfoms.mostat.model;
 
 public class FormParameters {
+	private String dtRep;
+
 	private String dtFrom;
 
 	private String dtTo;
@@ -39,6 +41,14 @@ public class FormParameters {
 
 	public void setLpuId(Integer lpuId) {
 		this.lpuId = lpuId;
+	}
+
+	public String getDtRep() {
+		return dtRep;
+	}
+
+	public void setDtRep(String dtRep) {
+		this.dtRep = dtRep;
 	}
 
 }

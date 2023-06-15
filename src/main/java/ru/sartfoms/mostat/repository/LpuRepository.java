@@ -11,4 +11,6 @@ public interface LpuRepository extends JpaRepository<Lpu, Integer> {
 
 	Collection<Lpu> findByIdIn(Set<Integer> ids);
 
+	Collection<? extends Lpu> findAllByOrderById();
+
 }

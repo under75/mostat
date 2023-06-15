@@ -4,20 +4,40 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary"
 		th:fragment="navbar">
-		<div class="container-fluid"><div class="d-inline-flex"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-file-earmark-medical text-white" viewBox="0 0 16 16">
-  <path d="M7.5 5.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L6 7l-.549.317a.5.5 0 1 0 .5.866l.549-.317V8.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L8 7l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V5.5zm-2 4.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
-  <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
-</svg>&nbsp;<h4 class="navbar-brand"
-				th:text="${@environment.getProperty('app.name')}"></h4></div>
-
-				<form th:action="@{/logout}" method="post">
-					<button type="submit" class="btn btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-door-open-fill" viewBox="0 0 16 16">
-  <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"></path>
+		<div class="container-fluid">
+			<div class="d-inline-flex">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+					fill="currentColor" class="bi bi-file-earmark-medical text-white"
+					viewBox="0 0 16 16">
+  <path
+						d="M7.5 5.5a.5.5 0 0 0-1 0v.634l-.549-.317a.5.5 0 1 0-.5.866L6 7l-.549.317a.5.5 0 1 0 .5.866l.549-.317V8.5a.5.5 0 1 0 1 0v-.634l.549.317a.5.5 0 1 0 .5-.866L8 7l.549-.317a.5.5 0 1 0-.5-.866l-.549.317V5.5zm-2 4.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 2a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z" />
+  <path
+						d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
 </svg>
-                Выход
-              </button>
-				</form>
+				&nbsp;
+				<h4 class="navbar-brand"
+					th:text="${@environment.getProperty('app.name')}"></h4>
+			</div>
+			<ul class="navbar-nav me-auto" sec:authorize="hasAuthority('tfoms')">
+				<li class="nav-item"><a class="nav-link"
+					th:classappend="${#httpServletRequest.servletPath} == '/tfoms' ? 'active' : ''"
+					href="/tfoms">Просмотр отчетов</a></li>
+				<li class="nav-item"><a class="nav-link"
+					th:classappend="${#strings.contains(#httpServletRequest.requestURI, '/tfoms/admin')} ? 'active' : ''"
+					href="/tfoms/admin">Администрирование отчетов</a></li>
+			</ul>
+
+			<form th:action="@{/logout}" method="post">
+				<button type="submit" class="btn btn-primary">
+					<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+						fill="currentColor" class="bi bi-door-open-fill"
+						viewBox="0 0 16 16">
+  <path
+							d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15H1.5zM11 2h.5a.5.5 0 0 1 .5.5V15h-1V2zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1z"></path>
+</svg>
+					Выход
+				</button>
+			</form>
 		</div>
 	</nav>
 </body>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Новый отчет'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" />
+<style>
+div.scrolltable {
+	overflow: auto;
+}
+</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:insert="menu :: navbar"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb ">
+				<li class="breadcrumb-item"><a href="/tfoms/admin">Список
+						отчетов</a></li>
+				<li class="breadcrumb-item active">Новый отчет</li>
+			</ol>
+		</nav>
+		<form th:method="POST" th:action="@{/tfoms/admin/new}" id="homeForm">
+			<div class="row">
+				<div class="col-sm-7">
+					<div class="form-group">
+						<div class="d-flex justify-content-center">
+							<h5>Выбор типа отчета</h5>
+							<svg th:if="${formParams.reportTypeId != null}"
+								xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+								fill="currentColor" class="bi bi-check-lg text-success"
+								viewBox="0 0 16 16">
+  <path
+									d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+</svg>
+						</div>
+						<select class="form-select" size="3"
+							th:classappend="${formParams.reportTypeId != null} ? 'is-valid' : ''"
+							th:field="*{formParams.reportTypeId}"
+							onchange="this.form.lpuId.value = null;this.form.submit()">
+							<option th:each="reportType : ${reportTypes}"
+								th:value="${reportType.id}"
+								th:text="${reportType.id} +' - '+${reportType.name}"
+								th:selected="${formParams.reportTypeId}"></option>
+						</select>
+					</div>
+				</div>
+				<div class="col-sm">
+					<div class="form-group">
+						<div class="d-flex justify-content-center">
+							<h5>Выбор МО</h5>
+							<svg th:if="${formParams.lpuId != null}"
+								xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+								fill="currentColor" class="bi bi-check-lg text-success"
+								viewBox="0 0 16 16">
+  <path
+									d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+</svg>
+						</div>
+						<select class="form-select" size="3"
+							th:classappend="${formParams.lpuId != null} ? 'is-valid' : ''"
+							th:field="*{formParams.lpuId}" onchange="this.form.submit()">
+							<option th:each="lpu : ${lpus}" th:value="${lpu.id}"
+								th:text="${lpu.id} + ' - ' + ${lpu.name}"
+								th:selected="${formParams.lpuId}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="row d-flex justify-content-center"
+				th:if="${formParams.lpuId != null}">
+				<div class="col-sm-1">
+					<input type="hidden" name="add" value="0" /> <input type="button"
+						value="Назначить отчет на"
+						onclick="this.form.add.value='1';this.form.submit()"
+						class="btn btn-sm btn-primary" />
+				</div>
+				<div class="col-sm-2">
+					<input type="date" th:field="*{formParams.dtRep}" id="dtRep"
+						class="form-control form-control-sm"
+						th:classappend="${#fields.hasErrors('formParams.dtRep')} ? 'is-invalid' : ''" />
+				</div>
+			</div>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start fixed-bottom" th:fragment="footer"
+		th:insert="copyright"> </footer>
+	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

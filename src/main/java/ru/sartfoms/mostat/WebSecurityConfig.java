@@ -41,7 +41,7 @@ public class WebSecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.formLogin().loginPage("/login").usernameParameter("name").passwordParameter("passwd")
 				.successHandler(myAuthenticationSuccessHandler());
-		http.authorizeRequests().antMatchers("/resources/**", "/static/**", "/webjars/**").permitAll()
+		http.authorizeRequests().antMatchers("/resources/**", "/static/**", "/webjars/**", "/help/**").permitAll()
 				.antMatchers("/tfoms/**").hasAnyAuthority("tfoms").antMatchers("/lpu/**").hasAnyAuthority("lpu")
 				.anyRequest().authenticated().and().formLogin().permitAll().and().logout().permitAll().and()
 				.exceptionHandling().accessDeniedPage("/403");

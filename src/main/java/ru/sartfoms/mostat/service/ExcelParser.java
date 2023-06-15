@@ -15,19 +15,25 @@ public class ExcelParser {
 	XSSFWorkbook workbook;
 	XSSFSheet sheet;
 	public static final int START_ROW_NUM = 8;
+	private Long repTypeId;
 
 	public ExcelParser(InputStream inputStream) throws IOException {
 		workbook = new XSSFWorkbook(inputStream);
 		sheet = workbook.getSheetAt(0);
+		String sheetName = sheet.getSheetName();
+		repTypeId = Long.valueOf(sheetName.substring(sheetName.indexOf("№") + 1));
 	}
 
 	public Iterator<Row> getRowIterator() {
 		return sheet.iterator();
 	}
+	
+	public Long getRepTypeId() {
+		return repTypeId;
+	}
 
 	public Boolean write(ReportData entity, Row row) throws IOException {
-		String sheetName = sheet.getSheetName();
-		entity.setTypeId(Long.valueOf(sheetName.substring(sheetName.indexOf("№") + 1)));
+		entity.setTypeId(repTypeId);
 
 		if (row.getRowNum() < START_ROW_NUM)
 			return false;
@@ -102,7 +108,6 @@ public class ExcelParser {
 				break;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		return cellValue;

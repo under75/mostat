@@ -1,6 +1,6 @@
 package ru.sartfoms.mostat.repository;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collection;
 
 import org.springframework.data.domain.Page;
@@ -14,28 +14,28 @@ public interface ReportDataRepository extends JpaRepository<ReportData, ReportDa
 
 	Collection<ReportData> findByTypeId(Long reportTypeId);
 
-	Collection<ReportData> findByTypeIdAndLpuIdAndDateTimeBetweenOrderByDateTime(Long reportTypeId, Integer lpuId,
-			LocalDateTime dtFrom, LocalDateTime dtTo);
+	Collection<ReportData> findByTypeIdAndLpuIdAndDtRepBetweenOrderByDtRep(Long reportTypeId, Integer lpuId,
+			LocalDate dtFrom, LocalDate dtTo);
 
-	Collection<ReportData> findByTypeIdAndDateTimeBetweenOrderByDateTime(Long reportTypeId, LocalDateTime parse,
-			LocalDateTime parse2);
+	Collection<ReportData> findByTypeIdAndDtRepBetweenOrderByDtRep(Long reportTypeId, LocalDate parse,
+			LocalDate parse2);
 
-	Collection<ReportData> findByTypeIdAndLpuIdAndDateTimeAfterOrderByDateTime(Long reportTypeId, Integer lpuId,
-			LocalDateTime parse);
+	Collection<ReportData> findByTypeIdAndLpuIdAndDtRepAfterOrderByDtRep(Long reportTypeId, Integer lpuId,
+			LocalDate parse);
 
-	Collection<ReportData> findByTypeIdAndDateTimeAfterOrderByDateTime(Long reportTypeId, LocalDateTime parse);
+	Collection<ReportData> findByTypeIdAndDtRepAfterOrderByDtRep(Long reportTypeId, LocalDate parse);
 
-	Collection<ReportData> findByTypeIdAndLpuIdAndDateTimeBeforeOrderByDateTime(Long reportTypeId, Integer lpuId,
-			LocalDateTime parse);
+	Collection<ReportData> findByTypeIdAndLpuIdAndDtRepBeforeOrderByDtRep(Long reportTypeId, Integer lpuId,
+			LocalDate parse);
 
-	Collection<ReportData> findByTypeIdAndDateTimeBeforeOrderByDateTime(Long reportTypeId, LocalDateTime parse);
+	Collection<ReportData> findByTypeIdAndDtRepBeforeOrderByDtRep(Long reportTypeId, LocalDate parse);
 
 	Collection<ReportData> findByTypeIdAndLpuId(Long reportTypeId, Integer lpuId);
 
-	Collection<ReportData> findByTypeIdAndLpuIdAndDateTime(Long typeId, Integer lpuId, LocalDateTime dateTime);
+	Collection<ReportData> findByTypeIdAndLpuIdAndDtRep(Long typeId, Integer lpuId, LocalDate dtRep);
 
-	Page<ReportData> findByLpuIdAndRowNumOrderByDateTimeDesc(Integer lpuId, int i, PageRequest pageRequest);
+	Page<ReportData> findByLpuIdAndRowNumOrderByDtRepDesc(Integer lpuId, int i, PageRequest pageRequest);
 
-	ReportData findByTypeIdAndDateTime(Long typeId, LocalDateTime parse);
+	ReportData findByTypeIdAndDtRep(Long typeId, LocalDate parse);
 
 }

@@ -15,7 +15,7 @@
 	<div class="container d-flex align-items-center justify-content-center">
 		<form th:method="POST" th:action="@{/login}">
 			<h1 class="mb-3">
-				MOStat&nbsp;&nbsp;<span class="h6"
+				<span th:text="${@environment.getProperty('app.name')}"></span>&nbsp;&nbsp;<span class="h6"
 					th:text="'v' + ${@environment.getProperty('app.version')}"></span>
 			</h1>
 			<div class="form-outline mb-4">
@@ -33,6 +33,7 @@
 				имя/пароль</div>
 
 			<button type="submit" class="btn btn-primary">Войти</button>
+			<a th:href="@{/help}" class="btn btn-link">Справка</a>
 		</form>
 	</div>
 	<footer class="text-center text-lg-start fixed-bottom"

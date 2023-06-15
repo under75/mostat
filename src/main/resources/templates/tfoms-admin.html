@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title
+	th:text="${@environment.getProperty('app.name')} + ' - Список отчетов'"></title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" />
+<style>
+div.scrolltable {
+	overflow: auto;
+}
+</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div th:insert="menu :: navbar"></div>
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb ">
+				<li class="breadcrumb-item active">Список отчетов</li>
+				<li class="breadcrumb-item"><a href="/tfoms/admin/new">Новый
+						отчет</a></li>
+			</ol>
+		</nav>
+		<form th:method="POST" th:action="@{/tfoms/admin}" id="homeForm">
+			<div th:if="${reportStatusesPage.content.size} > 0">
+				<table class="table table-sm table-bordered">
+					<thead class="table-light">
+						<tr class="small text-center">
+							<th>Код</th>
+							<th>Название отчета</th>
+							<th>Код МО</th>
+							<th>Наименование МО</th>
+							<th>Назначен на дату</th>
+							<th>Статус</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="small text-center"
+							th:each="reportStatus : ${reportStatusesPage.content}">
+							<td th:text="${reportStatus.typeId}" />
+							<td th:text="${reportStatus.reportType.name}" />
+							<td th:text="${reportStatus.lpuId}">
+							<td th:text="${reportStatus.lpu.name}" />
+							<td
+								th:text="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}">
+							<td><span
+								th:text="${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).OPEN ? 'открыт' : reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).DONE ? 'заполнен' : 'закрыт'}"
+								class="badge"
+								th:classappend="|${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).CLOSED ? 'text-bg-success' : ''} ${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).DONE ? 'text-bg-warning' : ''} ${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).OPEN ? 'text-bg-light' : ''}|"></span></td>
+							<td th:if="${reportStatus.status != T(ru.sartfoms.mostat.service.util.Status).CLOSED}"><input type="button" value="Закрыть" th:attr="data-typeId=${reportStatus.typeId},data-lpuId=${reportStatus.lpuId},data-date=${reportStatus.dtRep.toString()}"
+								class="btn btn-sm btn-outline-secondary" onclick="closeRep(this.getAttribute('data-typeId'),this.getAttribute('data-lpuId'), this.getAttribute('data-date'))"/></td>
+						</tr>
+					</tbody>
+				</table>
+				<nav aria-label="Pagination"
+					th:if="${reportStatusesPage.totalPages gt 1}">
+					<ul
+						class="pagination pagination-sm justify-content-center font-weight-medium">
+						<li class="page-item"
+							th:classappend="${reportStatusesPage.number eq 0} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${reportStatusesPage.number eq 0} ? 'disabled'"
+								th:onclick="|goToPage(${reportStatusesPage.number lt 2 ? 1 : reportStatusesPage.number})|">
+								<p>&#60;&#60;
+								<p>
+							</button>
+						</li>
+						<li class="page-item"
+							th:classappend="${i eq reportStatusesPage.number + 1} ? 'active'"
+							th:each="i : ${#numbers.sequence(reportStatusesPage.totalPages > reportStatusesPage.number + 10 ? reportStatusesPage.number + 1 : reportStatusesPage.totalPages - 10 > 0 ? reportStatusesPage.totalPages - 10 : 1, reportStatusesPage.totalPages > 10 + reportStatusesPage.number ? reportStatusesPage.number + 10 : reportStatusesPage.totalPages, 1)}">
+							<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
+							th:text="${i}"><span class="sr-only">(current)</span></a>
+						</li>
+						<li class="page-item disabled"
+							th:if="${reportStatusesPage.number + 10 < reportStatusesPage.totalPages}"><a
+							class="page-link" href="#"> ... </a></li>
+						<li class="page-item"
+							th:classappend="${reportStatusesPage.number + 1 eq reportStatusesPage.totalPages} ? 'disabled'">
+							<button type="button" class="btn btn-sm btn-link"
+								th:classappend="${reportStatusesPage.number + 1 eq reportStatusesPage.totalPages} ? 'disabled'"
+								th:onclick="|goToPage(${reportStatusesPage.number + 2})|">
+								<p>&#62;&#62;
+								<p>
+							</button>
+						</li>
+					</ul>
+				</nav>
+				<input type="hidden" name="page" th:value="${page}"/>
+				<input type="hidden" name="typeId"/>
+				<input type="hidden" name="lpuId"/>
+				<input type="hidden" name="dtRep"/>
+			</div>
+		</form>
+	</div>
+	<footer class="text-center text-lg-start" th:fragment="footer"
+		th:insert="copyright"> </footer>
+	<script type="text/javascript">
+		function goToPage(page) {
+			form = document.getElementById("homeForm");
+			form.page.value = page;
+			form.submit();
+		}
+		function closeRep(typeId, lpuId, dtRep) {
+			form = document.getElementById("homeForm");
+			form.typeId.value = typeId;
+			form.lpuId.value = lpuId;
+			form.dtRep.value = dtRep;
+			form.submit();
+		}
+	</script>
+	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

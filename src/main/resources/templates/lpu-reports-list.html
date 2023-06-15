@@ -15,8 +15,8 @@
 		<div th:insert="menu :: navbar"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb ">
-				<li class="breadcrumb-item" aria-current="page"><a href="/lpu">Главная</a></li>
-				<li class="breadcrumb-item active">Список загруженных отчетов</li>
+				<li class="breadcrumb-item"><a href="/lpu">Назначенные отчеты</a></li>
+				<li class="breadcrumb-item active">Загруженные отчеты</li>
 			</ol>
 		</nav>
 		<h4 th:text="${lpu.name}"></h4>
@@ -25,59 +25,58 @@
 			<input type="hidden" id="page" name="page" />
 			<table class="table table-sm table-bordered">
 				<thead class="table-light">
-					<tr class="small">
+					<tr class="small text-center">
 						<th>Код</th>
-						<th>Дата загрузки</th>
-						<th>Отчет</th>
-						<th></th>
+						<th>Назнач. дата</th>
+						<th>Скачать отчет</th>
+						<th>Статус</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr class="small"
-						th:each="reportData, iStat : ${reportDatasPage.content}">
-						<td th:text="${reportData.typeId}" />
+					<tr class="small text-center"
+						th:each="reportStatus, iStat : ${reportStatusPage.content}">
+						<td th:text="${reportStatus.typeId}" />
 						<td
-							th:text="${#temporals.format(reportData.dateTime, 'dd.MM.yyyy HH:mm:ss')}"></td>
+							th:text="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"></td>
 						<td
-							th:attr="data-typeId=${reportData.typeId},data-date=${reportData.dateTime.toString()}"
+							th:attr="data-typeId=${reportStatus.typeId},data-date=${reportStatus.dtRep.toString()}"
 							class="btn-link" style="cursor: pointer;"
-							th:text="${reportTypesMap.get(reportData.typeId)}"
+							th:text="${reportStatus.reportType.name}"
 							onclick="download(this.getAttribute('data-typeId'), this.getAttribute('data-date'))" />
-						<td><input type="button"
-							th:attr="data-typeId=${reportData.typeId},data-date=${reportData.dateTime.toString()}"
-							value="Удалить"
-							onclick="deleteRep(this.getAttribute('data-typeId'), this.getAttribute('data-date'))"
-							class="btn btn-sm btn-warning" /></td>
+						<td><span
+								th:text="${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).OPEN ? 'открыт' : reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).DONE ? 'заполнен' : 'закрыт'}"
+								class="badge"
+								th:classappend="|${reportStatus.status == 2 ? 'text-bg-success' : ''} ${reportStatus.status == 1 ? 'text-bg-warning' : ''} ${reportStatus.status == 0 ? 'text-bg-light' : ''}|"></span></td>
 					</tr>
 				</tbody>
 			</table>
 			<nav aria-label="Pagination"
-				th:if="${reportDatasPage.totalPages gt 1}">
+				th:if="${reportStatusPage.totalPages gt 1}">
 				<ul
 					class="pagination pagination-sm justify-content-center font-weight-medium">
 					<li class="page-item"
-						th:classappend="${reportDatasPage.number eq 0} ? 'disabled'">
+						th:classappend="${reportStatusPage.number eq 0} ? 'disabled'">
 						<button type="button" class="btn btn-sm btn-link"
-							th:classappend="${reportDatasPage.number eq 0} ? 'disabled'"
-							th:onclick="|goToPage(${reportDatasPage.number lt 2 ? 1 : reportDatasPage.number})|">
+							th:classappend="${reportStatusPage.number eq 0} ? 'disabled'"
+							th:onclick="|goToPage(${reportStatusPage.number lt 2 ? 1 : reportStatusPage.number})|">
 							<p>&#60;&#60;
 							<p>
 						</button>
 					</li>
 					<li class="page-item"
-						th:classappend="${i eq reportDatasPage.number + 1} ? 'active'"
-						th:each="i : ${#numbers.sequence(reportDatasPage.totalPages > reportDatasPage.number + 10 ? reportDatasPage.number + 1 : reportDatasPage.totalPages - 10 > 0 ? reportDatasPage.totalPages - 10 : 1, reportDatasPage.totalPages > 10 + reportDatasPage.number ? reportDatasPage.number + 10 : reportDatasPage.totalPages, 1)}">
+						th:classappend="${i eq reportStatusPage.number + 1} ? 'active'"
+						th:each="i : ${#numbers.sequence(reportStatusPage.totalPages > reportStatusPage.number + 10 ? reportStatusPage.number + 1 : reportStatusPage.totalPages - 10 > 0 ? reportStatusPage.totalPages - 10 : 1, reportStatusPage.totalPages > 10 + reportStatusPage.number ? reportStatusPage.number + 10 : reportStatusPage.totalPages, 1)}">
 						<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
 						th:text="${i}"><span class="sr-only">(current)</span></a>
 					</li>
 					<li class="page-item disabled"
-						th:if="${reportDatasPage.number + 10 < reportDatasPage.totalPages}"><a
+						th:if="${reportStatusPage.number + 10 < reportStatusPage.totalPages}"><a
 						class="page-link" href="#"> ... </a></li>
 					<li class="page-item"
-						th:classappend="${reportDatasPage.number + 1 eq reportDatasPage.totalPages} ? 'disabled'">
+						th:classappend="${reportStatusPage.number + 1 eq reportStatusPage.totalPages} ? 'disabled'">
 						<button type="button" class="btn btn-sm btn-link"
-							th:classappend="${reportDatasPage.number + 1 eq reportDatasPage.totalPages} ? 'disabled'"
-							th:onclick="|goToPage(${reportDatasPage.number + 2})|">
+							th:classappend="${reportStatusPage.number + 1 eq reportStatusPage.totalPages} ? 'disabled'"
+							th:onclick="|goToPage(${reportStatusPage.number + 2})|">
 							<p>&#62;&#62;
 							<p>
 						</button>

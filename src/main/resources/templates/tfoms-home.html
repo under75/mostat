@@ -18,10 +18,9 @@ div.scrolltable {
 <body>
 	<div class="container-fluid">
 		<div th:insert="menu :: navbar"></div>
-		<br />
 		<form th:method="POST" th:action="@{/tfoms}" id="homeForm">
 			<div class="row">
-				<div class="col-sm">
+				<div class="col-sm-7">
 					<div class="form-group">
 						<div class="d-flex justify-content-center">
 							<h5>Выбор типа отчета</h5>
@@ -39,7 +38,7 @@ div.scrolltable {
 							onchange="this.form.lpuId.value = null;this.form.submit()">
 							<option th:each="reportType : ${reportTypes}"
 								th:value="${reportType.id}"
-								th:text="'№' + ${reportType.id} +' '+${reportType.name}"
+								th:text="${reportType.id} +' - '+${reportType.name}"
 								th:selected="${formParams.reportTypeId}"></option>
 						</select>
 					</div>
@@ -60,7 +59,7 @@ div.scrolltable {
 							th:classappend="${formParams.lpuId != null} ? 'is-valid' : ''"
 							th:field="*{formParams.lpuId}" onchange="this.form.submit()">
 							<option th:each="lpu : ${lpus}" th:value="${lpu.id}"
-								th:text="${lpu.name}" th:selected="${formParams.lpuId}"></option>
+								th:text="${lpu.id} + ' - ' + ${lpu.name}" th:selected="${formParams.lpuId}"></option>
 						</select>
 					</div>
 				</div>
@@ -70,7 +69,7 @@ div.scrolltable {
 				th:if="${formParams.lpuId != null}">
 				<div class="col-sm-1">
 					<input type="hidden" name="show" value="0" /> <input type="button"
-						value="Cмотреть отчет"
+						value="Cмотреть отчеты"
 						onclick="this.form.show.value=1;this.form.submit()"
 						class="btn btn-sm btn-primary" />
 				</div>
@@ -118,7 +117,7 @@ div.scrolltable {
 								<tr class="small text-end">
 									<td class="text-center" th:if="${rowStat.index == 0}" th:rowspan="${rowStat.size}" th:text="${lpuMap.key}"></td>
 									<td th:if="${rowStat.index == 0}" th:rowspan="${rowStat.size}"
-										th:text="${#temporals.format(dateMap.key, 'dd.MM.yyyy HH:mm:ss')}"></td>
+										th:text="${#temporals.format(dateMap.key, 'dd.MM.yyyy')}"></td>
 									<th:block th:each="col : ${rowMap.value}">
 										<td th:text="${col}"></td>
 									</th:block>

@@ -46,4 +46,8 @@ public class LpuService {
 		return dummy;
 	}
 
+	public Collection<? extends Lpu> findAll() {
+		return lpuRepository.findAllByOrderById();
+	}
+
 }

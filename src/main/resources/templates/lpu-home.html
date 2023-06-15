@@ -15,78 +15,81 @@
 		<div th:insert="menu :: navbar"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb ">
-				<li class="breadcrumb-item active">Главная</li>
-				<li class="breadcrumb-item" aria-current="page"><a
-					href="/lpu/reports">Список загруженных отчетов</a></li>
+				<li class="breadcrumb-item active">Назначенные отчеты</li>
+				<li class="breadcrumb-item"><a href="/lpu/reports">Загруженные
+						отчеты</a></li>
 			</ol>
 		</nav>
 		<form th:method="POST" enctype="multipart/form-data"
 			th:action="@{/lpu/upload}" id="repForm">
-			<input type="hidden" id="page" name="page" />
+			<input type="hidden" id="page" name="page" /> <input type="hidden"
+				id="dtRep" name="dtRep" />
 			<h4 th:text="${lpu.name}"></h4>
-			<div th:if="${reportTypesPage.content.size} > 0">
-				<table class="table table-sm table-bordered">
-					<thead class="table-light">
-						<tr class="small">
-							<th>Код</th>
-							<th>Скачать шаблон отчета</th>
-							<th class="d-flex justify-content-between">Загрузить отчет
-								<div th:if="${hasError != null}">
-									<span class="badge rounded-pill bg-danger" th:if="${hasError}">ошибка
-										загрузки</span><span class="badge rounded-pill bg-success"
-										th:if="${!hasError}">отчет загружен</span>
-								</div>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="small"
-							th:each="reportType, iStat : ${reportTypesPage.content}">
-							<td th:text="${reportType.id}" />
-							<td class="btn-link" style="cursor: pointer;"
-								th:text="${reportType.name}"
-								th:onclick="|location.href='@{/lpu/download}/${reportType.id}'|" />
-							<td><input type="file" name="report"
-								th:id="'rep' + ${reportType.id}"
-								class="form-control form-control-sm"
-								onchange="this.form.submit()"></td>
-						</tr>
-					</tbody>
-				</table>
-				<nav aria-label="Pagination"
-					th:if="${reportTypesPage.totalPages gt 1}">
-					<ul
-						class="pagination pagination-sm justify-content-center font-weight-medium">
-						<li class="page-item"
-							th:classappend="${reportTypesPage.number eq 0} ? 'disabled'">
-							<button type="button" class="btn btn-sm btn-link"
-								th:classappend="${reportTypesPage.number eq 0} ? 'disabled'"
-								th:onclick="|goToPage(${reportTypesPage.number lt 2 ? 1 : reportTypesPage.number})|">
-								<p>&#60;&#60;
-								<p>
-							</button>
-						</li>
-						<li class="page-item"
-							th:classappend="${i eq reportTypesPage.number + 1} ? 'active'"
-							th:each="i : ${#numbers.sequence(reportTypesPage.totalPages > reportTypesPage.number + 10 ? reportTypesPage.number + 1 : reportTypesPage.totalPages - 10 > 0 ? reportTypesPage.totalPages - 10 : 1, reportTypesPage.totalPages > 10 + reportTypesPage.number ? reportTypesPage.number + 10 : reportTypesPage.totalPages, 1)}">
-							<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
-							th:text="${i}"><span class="sr-only">(current)</span></a>
-						</li>
-						<li class="page-item disabled"
-							th:if="${reportTypesPage.number + 10 < reportTypesPage.totalPages}"><a
-							class="page-link" href="#"> ... </a></li>
-						<li class="page-item"
-							th:classappend="${reportTypesPage.number + 1 eq reportTypesPage.totalPages} ? 'disabled'">
-							<button type="button" class="btn btn-sm btn-link"
-								th:classappend="${reportTypesPage.number + 1 eq reportTypesPage.totalPages} ? 'disabled'"
-								th:onclick="|goToPage(${reportTypesPage.number + 2})|">
-								<p>&#62;&#62;
-								<p>
-							</button>
-						</li>
-					</ul>
-				</nav>
-			</div>
+			<table class="table table-sm table-bordered">
+				<thead class="table-light">
+					<tr class="small text-center">
+						<th>Код</th>
+						<th>Скачать шаблон отчета</th>
+						<th>Назнач. дата</th>
+						<th class="d-flex justify-content-between">Загрузить отчет
+							<div th:if="${hasError != null}">
+								<span class="badge rounded-pill bg-danger" th:if="${hasError}">ошибка
+									загрузки</span><span class="badge rounded-pill bg-success"
+									th:if="${!hasError}">отчет загружен</span>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody th:if="${reportStatusPage.content.size} > 0">
+					<tr class="small text-center"
+						th:each="reportStatus, iStat : ${reportStatusPage.content}">
+						<td th:text="${reportStatus.typeId}" />
+						<td class="btn-link" style="cursor: pointer;"
+							th:text="${reportStatus.reportType.name}"
+							th:onclick="|location.href='@{/lpu/download}/${reportStatus.typeId}'|" />
+						<td
+							th:text="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"></td>
+						<td><input type="file" name="report"
+							th:attr="data-dtrep=${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"
+							th:id="'rep' + ${reportStatus.typeId}"
+							class="form-control form-control-sm"
+							onchange="upload(this.getAttribute('data-dtrep'))"></td>
+					</tr>
+				</tbody>
+			</table>
+			<nav aria-label="Pagination"
+				th:if="${reportStatusPage.totalPages gt 1}">
+				<ul
+					class="pagination pagination-sm justify-content-center font-weight-medium">
+					<li class="page-item"
+						th:classappend="${reportStatusPage.number eq 0} ? 'disabled'">
+						<button type="button" class="btn btn-sm btn-link"
+							th:classappend="${reportStatusPage.number eq 0} ? 'disabled'"
+							th:onclick="|goToPage(${reportStatusPage.number lt 2 ? 1 : reportStatusPage.number})|">
+							<p>&#60;&#60;
+							<p>
+						</button>
+					</li>
+					<li class="page-item"
+						th:classappend="${i eq reportStatusPage.number + 1} ? 'active'"
+						th:each="i : ${#numbers.sequence(reportStatusPage.totalPages > reportStatusPage.number + 10 ? reportStatusPage.number + 1 : reportStatusPage.totalPages - 10 > 0 ? reportStatusPage.totalPages - 10 : 1, reportStatusPage.totalPages > 10 + reportStatusPage.number ? reportStatusPage.number + 10 : reportStatusPage.totalPages, 1)}">
+						<a class="page-link" href="#" th:onclick="|goToPage(${i})|"
+						th:text="${i}"><span class="sr-only">(current)</span></a>
+					</li>
+					<li class="page-item disabled"
+						th:if="${reportStatusPage.number + 10 < reportStatusPage.totalPages}"><a
+						class="page-link" href="#"> ... </a></li>
+					<li class="page-item"
+						th:classappend="${reportStatusPage.number + 1 eq reportStatusPage.totalPages} ? 'disabled'">
+						<button type="button" class="btn btn-sm btn-link"
+							th:classappend="${reportStatusPage.number + 1 eq reportStatusPage.totalPages} ? 'disabled'"
+							th:onclick="|goToPage(${reportStatusPage.number + 2})|">
+							<p>&#62;&#62;
+							<p>
+						</button>
+					</li>
+				</ul>
+			</nav>
 		</form>
 	</div>
 	<footer class="text-center text-lg-start fixed-bottom"
@@ -98,6 +101,11 @@
 			form.action = "/lpu";
 			form.submit();
 			form.action = "/lpu/upload";
+		}
+		function upload(dtRep) {
+			form = document.getElementById("repForm");
+			form.dtRep.value = dtRep;
+			form.submit();
 		}
 	</script>
 	<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.bundle.min.js}"></script>

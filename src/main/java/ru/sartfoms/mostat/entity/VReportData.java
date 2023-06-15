@@ -13,9 +13,9 @@ import javax.persistence.Table;
 import ru.sartfoms.mostat.model.MOReport;
 
 @Entity
-@Table(name = "MO_REPORT_DATA", schema = "STATOWNER")
+@Table(name = "V_MO_REPORT_DATA", schema = "STATOWNER")
 @IdClass(ReportDataId.class)
-public class ReportData implements MOReport{
+public class VReportData implements MOReport {
 	@Id
 	@Column(name = "REP_TYPE_ID")
 	private Long typeId;
@@ -28,164 +28,164 @@ public class ReportData implements MOReport{
 	@Id
 	@Column(name = "REP_ROW_NUM")
 	private Integer rowNum;
-	
+
 	@Column(name = "DT_INS")
 	private LocalDateTime dtIns;
-	
+
 	@Column(name = "USR")
 	private String userName;
-	
+
 	@Lob
 	@Column(name = "FILE_")
 	private byte[] file;
-	
+
 	@Column(name = "COL_E")
 	private String e;
-	
+
 	@Column(name = "COL_F")
 	private String f;
-	
+
 	@Column(name = "COL_G")
 	private String g;
-	
+
 	@Column(name = "COL_H")
 	private String h;
-	
+
 	@Column(name = "COL_I")
 	private String i;
-	
+
 	@Column(name = "COL_J")
 	private String j;
-	
+
 	@Column(name = "COL_K")
 	private String k;
-	
+
 	@Column(name = "COL_L")
 	private String l;
-	
+
 	@Column(name = "COL_M")
 	private String m;
-	
+
 	@Column(name = "COL_N")
 	private String n;
-	
+
 	@Column(name = "COL_O")
 	private String o;
-	
+
 	@Column(name = "COL_P")
 	private String p;
-	
+
 	@Column(name = "COL_Q")
 	private String q;
-	
+
 	@Column(name = "COL_R")
 	private String r;
-	
+
 	@Column(name = "COL_S")
 	private String s;
-	
+
 	@Column(name = "COL_T")
 	private String t;
-	
+
 	@Column(name = "COL_U")
 	private String u;
-	
+
 	@Column(name = "COL_V")
 	private String v;
-	
+
 	@Column(name = "COL_W")
 	private String w;
-	
+
 	@Column(name = "COL_X")
 	private String x;
-	
+
 	@Column(name = "COL_Y")
 	private String y;
-	
+
 	@Column(name = "COL_Z")
 	private String z;
-	
+
 	@Column(name = "COL_AA")
 	private String aa;
-	
+
 	@Column(name = "COL_AB")
 	private String ab;
-	
+
 	@Column(name = "COL_AC")
 	private String ac;
-	
+
 	@Column(name = "COL_AD")
 	private String ad;
-	
+
 	@Column(name = "COL_AE")
 	private String ae;
-	
+
 	@Column(name = "COL_AF")
 	private String af;
-	
+
 	@Column(name = "COL_AG")
 	private String ag;
-	
+
 	@Column(name = "COL_AH")
 	private String ah;
-	
+
 	@Column(name = "COL_AI")
 	private String ai;
-	
+
 	@Column(name = "COL_AJ")
 	private String aj;
-	
+
 	@Column(name = "COL_AK")
 	private String ak;
-	
+
 	@Column(name = "COL_AL")
 	private String al;
-	
+
 	@Column(name = "COL_AM")
 	private String am;
-	
+
 	@Column(name = "COL_AN")
 	private String an;
-	
+
 	@Column(name = "COL_AO")
 	private String ao;
-	
+
 	@Column(name = "COL_AP")
 	private String ap;
-	
+
 	@Column(name = "COL_AQ")
 	private String aq;
-	
+
 	@Column(name = "COL_AR")
 	private String ar;
-	
+
 	@Column(name = "COL_AS")
 	private String as;
-	
+
 	@Column(name = "COL_AT")
 	private String at;
-	
+
 	@Column(name = "COL_AU")
 	private String au;
-	
+
 	@Column(name = "COL_AV")
 	private String av;
-	
+
 	@Column(name = "COL_AW")
 	private String aw;
-	
+
 	@Column(name = "COL_AX")
 	private String ax;
-	
+
 	@Column(name = "COL_AY")
 	private String ay;
-	
+
 	@Column(name = "COL_AZ")
 	private String az;
-	
+
 	@Column(name = "COL_BA")
 	private String ba;
-	
+
 	@Column(name = "COL_BB")
 	private String bb;
 
@@ -644,5 +644,5 @@ public class ReportData implements MOReport{
 	public void setDtIns(LocalDateTime dtIns) {
 		this.dtIns = dtIns;
 	}
-	
+
 }
