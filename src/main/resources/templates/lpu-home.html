@@ -11,7 +11,7 @@
 	th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}" />
 </head>
 <body>
-	<div class="container">
+	<div class="container-flex">
 		<div th:insert="menu :: navbar"></div>
 		<nav aria-label="breadcrumb">
 			<ol class="breadcrumb ">
@@ -20,43 +20,71 @@
 						отчеты</a></li>
 			</ol>
 		</nav>
-		<form th:method="POST" enctype="multipart/form-data"
-			th:action="@{/lpu/upload}" id="repForm">
-			<input type="hidden" id="page" name="page" /> <input type="hidden"
-				id="dtRep" name="dtRep" />
-			<h4 th:text="${lpu.name}"></h4>
-			<table class="table table-sm table-bordered">
-				<thead class="table-light">
-					<tr class="small text-center">
-						<th>Код</th>
-						<th>Скачать шаблон отчета</th>
-						<th>Назнач. дата</th>
-						<th class="d-flex justify-content-between">Загрузить отчет
-							<div th:if="${hasError != null}">
-								<span class="badge rounded-pill bg-danger" th:if="${hasError}">ошибка
-									загрузки</span><span class="badge rounded-pill bg-success"
-									th:if="${!hasError}">отчет загружен</span>
-							</div>
-						</th>
-					</tr>
-				</thead>
-				<tbody th:if="${reportStatusPage.content.size} > 0">
-					<tr class="small text-center"
-						th:each="reportStatus, iStat : ${reportStatusPage.content}">
-						<td th:text="${reportStatus.typeId}" />
-						<td class="btn-link" style="cursor: pointer;"
+		<div class="row">
+			<div class="col">
+				<h4 th:text="${lpu.name}"></h4>
+			</div>
+			<div class="col text-end">
+				<div th:if="${status!= null}" th:switch="${status}">
+					<span class="badge rounded-pill bg-danger"
+						th:case="${T(ru.sartfoms.mostat.service.ReportDataService.UPLOAD_STATUS).INVALID}">ошибка
+						загрузки</span><span class="badge rounded-pill bg-success"
+						th:case="${T(ru.sartfoms.mostat.service.ReportDataService.UPLOAD_STATUS).DONE}">отчет
+						загружен</span>
+				</div>
+			</div>
+		</div>
+		<div class="row p-1 bg-light border text-center small">
+			<div class="col">
+				<strong>Код</strong>
+			</div>
+			<div class="col-6">
+				<strong>Скачать шаблон отчета</strong>
+			</div>
+			<div class="col">
+				<strong>Дата</strong>
+			</div>
+			<div class="col-2">
+				<strong>Заполненный отчет</strong>
+			</div>
+			<div class="col-2">
+				<strong>Откреплен.подпись</strong>
+			</div>
+			<div class="col"></div>
+		</div>
+		<th:block th:if="${reportStatusPage.content.size} > 0"
+			th:each="reportStatus, iStat : ${reportStatusPage.content}">
+			<form th:method="POST" enctype="multipart/form-data"
+				th:action="@{/lpu/upload}" th:id="'repForm' + ${iStat.index}">
+				<input type="hidden" th:id="'dtRep' + ${iStat.index}" name="dtRep"
+					th:value="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}" />
+				<div class="row p-1 text-center small">
+
+					<div class="col" th:text="${reportStatus.typeId}"></div>
+					<div class="col-6">
+						<span class="btn-link" style="cursor: pointer;"
 							th:text="${reportStatus.reportType.name}"
-							th:onclick="|location.href='@{/lpu/download}/${reportStatus.typeId}'|" />
-						<td
-							th:text="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"></td>
-						<td><input type="file" name="report"
-							th:attr="data-dtrep=${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"
-							th:id="'rep' + ${reportStatus.typeId}"
-							class="form-control form-control-sm"
-							onchange="upload(this.getAttribute('data-dtrep'))"></td>
-					</tr>
-				</tbody>
-			</table>
+							th:onclick="|location.href='@{/lpu/download}/${reportStatus.typeId}'|"></span>
+					</div>
+					<div class="col"
+						th:text="${#temporals.format(reportStatus.dtRep, 'dd.MM.yyyy')}"></div>
+					<div class="col-2">
+						<input type="file" name="report" th:id="'rep' + ${iStat.index}"
+							class="form-control form-control-sm">
+					</div>
+					<div class="col-2">
+						<input type="file" name="signature" th:id="'sig' + ${iStat.index}"
+							class="form-control form-control-sm">
+					</div>
+					<div class="col">
+						<input type="submit" value="Загрузить"
+							class="btn btn-sm btn-outline-primary" />
+					</div>
+				</div>
+			</form>
+		</th:block>
+		<form th:method="POST" th:action="@{/lpu}" id="pageForm">
+			<input type="hidden" id="page" name="page" />
 			<nav aria-label="Pagination"
 				th:if="${reportStatusPage.totalPages gt 1}">
 				<ul
@@ -96,15 +124,8 @@
 		th:fragment="footer" th:insert="copyright"> </footer>
 	<script type="text/javascript">
 		function goToPage(page) {
-			form = document.getElementById("repForm");
+			form = document.getElementById("pageForm");
 			form.page.value = page;
-			form.action = "/lpu";
-			form.submit();
-			form.action = "/lpu/upload";
-		}
-		function upload(dtRep) {
-			form = document.getElementById("repForm");
-			form.dtRep.value = dtRep;
 			form.submit();
 		}
 	</script>

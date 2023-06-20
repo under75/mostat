@@ -52,8 +52,8 @@ div.scrolltable {
 								th:text="${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).OPEN ? 'открыт' : reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).DONE ? 'заполнен' : 'закрыт'}"
 								class="badge"
 								th:classappend="|${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).CLOSED ? 'text-bg-success' : ''} ${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).DONE ? 'text-bg-warning' : ''} ${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).OPEN ? 'text-bg-light' : ''}|"></span></td>
-							<td th:if="${reportStatus.status != T(ru.sartfoms.mostat.service.util.Status).CLOSED}"><input type="button" value="Закрыть" th:attr="data-typeId=${reportStatus.typeId},data-lpuId=${reportStatus.lpuId},data-date=${reportStatus.dtRep.toString()}"
-								class="btn btn-sm btn-outline-secondary" onclick="closeRep(this.getAttribute('data-typeId'),this.getAttribute('data-lpuId'), this.getAttribute('data-date'))"/></td>
+							<td><input type="button" value="Закрыть" th:attr="data-typeId=${reportStatus.typeId},data-lpuId=${reportStatus.lpuId},data-date=${reportStatus.dtRep.toString()}"
+								class="btn btn-sm btn-outline-secondary" onclick="closeRep(this.getAttribute('data-typeId'),this.getAttribute('data-lpuId'), this.getAttribute('data-date'))" th:disabled="${reportStatus.status == T(ru.sartfoms.mostat.service.util.Status).CLOSED}"/></td>
 						</tr>
 					</tbody>
 				</table>

@@ -114,11 +114,11 @@ public class LpuController {
 	}
 
 	@PostMapping("/lpu/upload")
-	public String upload(Model model, @RequestParam("report") MultipartFile[] file, @RequestParam("dtRep") String dtRep,
+	public String upload(Model model, @RequestParam("report") MultipartFile[] rep, @RequestParam("signature") MultipartFile[] sig, @RequestParam("dtRep") String dtRep,
 			RedirectAttributes redirectAttributes) {
 		User user = userService.getByName(SecurityContextHolder.getContext().getAuthentication().getName());
 
-		redirectAttributes.addFlashAttribute("hasError", reportDataService.parseAndSave(file, user, dtRep));
+		redirectAttributes.addFlashAttribute("status", reportDataService.parseAndSave(rep, sig, user, dtRep));
 
 		return "redirect:/lpu";
 	}

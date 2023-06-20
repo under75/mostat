@@ -39,6 +39,10 @@ public class ReportData implements MOReport{
 	@Column(name = "FILE_")
 	private byte[] file;
 	
+	@Lob
+	@Column(name = "SIGN_")
+	private byte[] signature;
+	
 	@Column(name = "COL_E")
 	private String e;
 	
@@ -227,6 +231,14 @@ public class ReportData implements MOReport{
 
 	public void setFile(byte[] file) {
 		this.file = file;
+	}
+
+	public byte[] getSignature() {
+		return signature;
+	}
+
+	public void setSignature(byte[] signature) {
+		this.signature = signature;
 	}
 
 	public String getE() {
