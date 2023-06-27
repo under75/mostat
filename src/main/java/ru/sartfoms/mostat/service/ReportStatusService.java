@@ -70,7 +70,7 @@ public class ReportStatusService {
 	public Page<ReportStatus> findByLpuIdAndStatus(Integer id, int status, Optional<Integer> page) {
 		int currentPage = page.orElse(1);
 		PageRequest pageRequest = PageRequest.of(currentPage - 1, PAGE_SIZE,
-				Sort.by("dtRep").descending().and(Sort.by("typeId")));
+				Sort.by("dtRep").ascending().and(Sort.by("typeId")));
 
 		return reportStatusRepository.findByLpuIdAndStatus(id, status, pageRequest);
 	}

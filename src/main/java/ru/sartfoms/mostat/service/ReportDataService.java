@@ -19,12 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import ru.sartfoms.mostat.entity.Certificate;
 import ru.sartfoms.mostat.entity.ReportData;
 import ru.sartfoms.mostat.entity.ReportStatus;
 import ru.sartfoms.mostat.entity.ReportStatusId;
 import ru.sartfoms.mostat.entity.User;
-import ru.sartfoms.mostat.repository.CertificateRepository;
 import ru.sartfoms.mostat.repository.ReportDataRepository;
 import ru.sartfoms.mostat.repository.ReportStatusRepository;
 import ru.sartfoms.mostat.repository.VReportDataRepository;
@@ -34,7 +32,6 @@ import ru.sartfoms.mostat.service.util.Status;
 public class ReportDataService {
 	private final ReportDataRepository reportDataRepository;
 	private final ReportStatusRepository reportStatusRepository;
-	private final CertificateRepository certificateRepository;
 
 	public enum UPLOAD_STATUS {
 		INVALID, DONE
@@ -44,10 +41,9 @@ public class ReportDataService {
 	private String criptoproDir;
 
 	public ReportDataService(ReportDataRepository reportDataRepository, ReportStatusRepository reportStatusRepository,
-			VReportDataRepository vReportDataRepository, CertificateRepository certificateRepository) {
+			VReportDataRepository vReportDataRepository) {
 		this.reportDataRepository = reportDataRepository;
 		this.reportStatusRepository = reportStatusRepository;
-		this.certificateRepository = certificateRepository;
 	}
 
 	public UPLOAD_STATUS parseAndSave(MultipartFile[] reps, MultipartFile[] signs, User user, String dtRepStr) {
@@ -93,7 +89,6 @@ public class ReportDataService {
 		boolean error = false;
 		boolean repSaved = false;
 		boolean signSaved = false;
-		Certificate certificate = certificateRepository.getReferenceById(user.getLpuId());
 		String report = "report" + user.getLpuId();
 		String signature = "signature" + user.getLpuId();
 		for (MultipartFile file : reps) {
@@ -127,11 +122,9 @@ public class ReportDataService {
 		if (!error && repSaved && signSaved) {
 			Process proc;
 			try {
-				proc = Runtime
-						.getRuntime().exec(
-								criptoproDir + "cryptcp.x64.exe -verify -uTrustedPeople -dn " + certificate.getCert()
-										+ " -detached -nochain " + report + " " + signature,
-								null, new File(criptoproDir));
+				proc = Runtime.getRuntime().exec(criptoproDir
+						+ "cryptcp.x64.exe -verify -uTrustedPeople -detached -nochain " + report + " " + signature,
+						null, new File(criptoproDir));
 				InputStreamReader isr = new InputStreamReader(proc.getInputStream(), Charset.forName("CP866"));
 				BufferedReader br = new BufferedReader(isr);
 				if (br.lines().filter(t -> t.contains("ErrorCode: 0x00000000")).count() == 0) {
